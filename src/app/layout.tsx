@@ -23,6 +23,7 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   openGraph: { title: "Tibu", description: DESCRIPTION, siteName: "Tibu", type: "website" },
   twitter: { card: "summary_large_image", title: "Tibu", description: DESCRIPTION },
+  other: { google: "notranslate" },
 };
 
 export const viewport: Viewport = {
@@ -34,7 +35,9 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${round.variable} ${korean.variable}`}>
+    // translate="no": the app is English only, and browser auto-translation (Papago in the
+    // Naver app, Chrome) mangles the short button labels ("Home" became "집입니다").
+    <html lang="en" translate="no" className={`notranslate ${round.variable} ${korean.variable}`}>
       <body>
         <InAppBrowser />
         <div className="app">{children}</div>

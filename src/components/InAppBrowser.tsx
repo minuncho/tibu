@@ -13,7 +13,8 @@ function detect(): InApp | null {
   const android = /Android/i.test(ua);
   if (/KAKAOTALK/i.test(ua)) return { name: "kakao", android };
   if (/\bLine\//i.test(ua)) return { name: "line", android };
-  if (/Instagram|FBAN|FBAV|FB_IAB|NAVER\(inapp|DaumApps|everytimeApp|Twitter|Snapchat/i.test(ua)) {
+  // The Naver app is left out on purpose: it is a full browser where sign-in and saving work.
+  if (/Instagram|FBAN|FBAV|FB_IAB|DaumApps|everytimeApp|Twitter|Snapchat/i.test(ua)) {
     return { name: "other", android };
   }
   return null;
