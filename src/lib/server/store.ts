@@ -73,7 +73,7 @@ export interface Store {
   // The user's own stickers that were taken down.
   listRemovedMade(userId: string): Promise<StickerRow[]>;
 
-  // A handful of other people's visible stickers, for the waiting screen. Roughly random.
+  // A handful of other people's visible stickers in random order, for the waiting screen.
   sampleStickers(excludeOwnerId: string, limit: number): Promise<StickerRow[]>;
 
   // Uniformly random over every sticker not owned by the user.

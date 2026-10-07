@@ -4,6 +4,7 @@ import { SUPABASE_SERVICE_ROLE_KEY, SUPABASE_URL } from "./env";
 import type { ReportRow, ReportStatus, StickerRow, Store } from "./store";
 
 const BUCKET = "stickers";
+const SAMPLE_WINDOW = 200;
 
 let client: SupabaseClient | null = null;
 // Service-role client: bypasses RLS, server only.
@@ -160,23 +161,25 @@ export const supabaseStore: Store = {
   },
 
   async sampleStickers(excludeOwnerId, limit) {
-    // A run of consecutive numbers starting at a random point: cheap, and varied enough here.
+    // Take a window of up to SAMPLE_WINDOW stickers (all of them while the pool is small,
+    // otherwise a window at a random position) and shuffle it, so the order is random.
     const total = count(await db().from("stickers").select("id", HEAD).eq("hidden", false));
     if (total === 0) return [];
-    const take = limit * 2;
-    const offset = Math.floor(Math.random() * Math.max(1, total - take + 1));
+    const offset = Math.floor(Math.random() * Math.max(1, total - SAMPLE_WINDOW + 1));
     const rows = check(
       await db()
         .from("stickers")
         .select("*")
         .eq("hidden", false)
         .order("serial_no")
-        .range(offset, offset + take - 1),
-    );
-    return (rows as DbSticker[])
-      .filter((s) => s.owner_id !== excludeOwnerId)
-      .slice(0, limit)
-      .map(toRow);
+        .range(offset, offset + SAMPLE_WINDOW - 1),
+    ) as DbSticker[];
+    const pool = rows.filter((s) => s.owner_id !== excludeOwnerId);
+    for (let k = pool.length - 1; k > 0; k--) {
+      const r = Math.floor(Math.random() * (k + 1));
+      [pool[k], pool[r]] = [pool[r], pool[k]];
+    }
+    return pool.slice(0, limit).map(toRow);
   },
   async randomSticker(excludeOwnerId) {
     const rows = check(await db().rpc("random_sticker", { uid: excludeOwnerId }));
