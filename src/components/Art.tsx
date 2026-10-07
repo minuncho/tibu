@@ -1,6 +1,9 @@
 // Home-screen button illustrations, no text.
 // Lineless flat style: no outlines, only pastel faces, upright and symmetric.
 
+// size: fixed pixel size, for places without CSS (the link preview image)
+type ArtProps = { size?: number };
+
 const SKY = "#bfe3ff";
 const SKY_DEEP = "#9fd2f7";
 const SKY_DARK = "#7fb6e0";
@@ -8,7 +11,7 @@ const SKY_PALE = "#e3f3ff";
 const YELLOW = "#ffe9a8";
 const PINK = "#ffc9d6";
 
-export function GachaArt() {
+export function GachaArt({ size }: ArtProps = {}) {
   // [x, y, top color]: two-tone capsules, white lower half
   const capsules: [number, number, string][] = [
     [100, 50, PINK],
@@ -19,7 +22,7 @@ export function GachaArt() {
     [140, 94, SKY_DEEP],
   ];
   return (
-    <svg viewBox="0 0 200 200" className="art" aria-hidden>
+    <svg viewBox="0 0 200 200" className="art" width={size} height={size} aria-hidden>
       <defs>
         <clipPath id="gacha-globe">
           <circle cx="100" cy="76" r="62" />
@@ -45,9 +48,9 @@ export function GachaArt() {
   );
 }
 
-export function CameraArt() {
+export function CameraArt({ size }: ArtProps = {}) {
   return (
-    <svg viewBox="0 0 200 200" className="art" aria-hidden>
+    <svg viewBox="0 0 200 200" className="art" width={size} height={size} aria-hidden>
       <rect x="72" y="42" width="56" height="34" rx="14" fill={SKY_DEEP} />
       <rect x="36" y="50" width="26" height="20" rx="8" fill={YELLOW} />
       <rect x="20" y="60" width="160" height="112" rx="30" fill={SKY} />
@@ -61,9 +64,9 @@ export function CameraArt() {
   );
 }
 
-export function AlbumArt() {
+export function AlbumArt({ size }: ArtProps = {}) {
   return (
-    <svg viewBox="0 0 200 200" className="art" aria-hidden>
+    <svg viewBox="0 0 200 200" className="art" width={size} height={size} aria-hidden>
       <rect x="44" y="32" width="124" height="148" rx="20" fill={SKY_PALE} />
       <rect x="32" y="22" width="128" height="150" rx="20" fill={SKY} />
       <path d="M52 22 h8 v150 h-8 a20 20 0 0 1 -20 -20 v-110 a20 20 0 0 1 20 -20 z" fill={SKY_DEEP} />

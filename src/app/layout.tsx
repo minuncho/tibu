@@ -10,9 +10,18 @@ const round = M_PLUS_Rounded_1c({
 });
 const korean = Jua({ weight: "400", subsets: ["latin"], variable: "--font-kr" });
 
+// Absolute base for the link-preview image. On Vercel this is the production domain.
+const SITE_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : "http://localhost:3000";
+const DESCRIPTION = "Turn your pet into a sticker and collect pets from around the world.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Tibu",
-  description: "Turn your pet into a sticker and collect pets from around the world.",
+  description: DESCRIPTION,
+  openGraph: { title: "Tibu", description: DESCRIPTION, siteName: "Tibu", type: "website" },
+  twitter: { card: "summary_large_image", title: "Tibu", description: DESCRIPTION },
 };
 
 export const viewport: Viewport = {
