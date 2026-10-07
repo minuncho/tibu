@@ -1,0 +1,93 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { GachaArt, Pips } from "@/components/Art";
+import { ReportButton } from "@/components/Report";
+import { DownloadButton, StickerView } from "@/components/StickerDetail";
+import { TopBar } from "@/components/TopBar";
+import { useAppState } from "@/components/useAppState";
+import { api } from "@/lib/api";
+import { BASE_DRAWS_PER_DAY, type Sticker } from "@/lib/types";
+
+const SPIN_MS = 1500;
+
+export default function DrawPage() {
+  const { state, refresh } = useAppState();
+  const [spinning, setSpinning] = useState(false);
+  const [result, setResult] = useState<Sticker | null>(null);
+  const [message, setMessage] = useState("");
+
+  const left = state?.drawsLeft ?? 0;
+
+  async function draw() {
+    setSpinning(true);
+    setMessage("");
+    try {
+      const [{ sticker }] = await Promise.all([
+        api<{ sticker: Sticker | null }>("/api/draw", { method: "POST" }),
+        new Promise((resolve) => setTimeout(resolve, SPIN_MS)),
+      ]);
+      if (sticker) setResult(sticker);
+      else setMessage("No stickers from other owners yet. Your draw was not used.");
+      await refresh();
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : "Something went wrong");
+    } finally {
+      setSpinning(false);
+    }
+  }
+
+  if (result) {
+    return (
+      <main>
+        <TopBar title="You got..." />
+        <div className="card stack">
+          <div className="reveal">
+            <StickerView sticker={result} />
+          </div>
+          <div className="actions" style={{ marginTop: 0 }}>
+            <DownloadButton sticker={result} />
+            {left > 0 && (
+              <button className="btn btn-ghost" onClick={() => setResult(null)}>
+                Draw again
+              </button>
+            )}
+            <Link className="btn btn-ghost" href="/">
+              Home
+            </Link>
+          </div>
+          <ReportButton key={result.id} sticker={result} />
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main>
+      <TopBar title="Draw a sticker" />
+      <div className="card stack">
+        <button
+          className="machine"
+          aria-label="Turn the handle"
+          data-spin={spinning}
+          disabled={spinning || left === 0}
+          onClick={draw}
+        >
+          <GachaArt />
+        </button>
+        {state && (
+          <Pips count={left} max={BASE_DRAWS_PER_DAY} />
+        )}
+        <p className="note">
+          {spinning
+            ? "Rattle rattle..."
+            : left > 0
+              ? "Tap the machine to draw"
+              : "No draws left today. Make a sticker to earn one!"}
+        </p>
+        {message && <p className="error">{message}</p>}
+      </div>
+    </main>
+  );
+}

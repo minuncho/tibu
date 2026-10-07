@@ -1,0 +1,117 @@
+import type { ReportReason, Sticker, StickerStyle } from "../types";
+import { isLive } from "./env";
+import { demoStore } from "./store-demo";
+import { supabaseStore } from "./store-supabase";
+
+export type StickerRow = {
+  id: string;
+  serialNo: number;
+  // null once the maker has deleted their account
+  ownerId: string | null;
+  name: string;
+  bubble: string;
+  style: StickerStyle;
+  imagePath: string;
+  country: string | null;
+  createdAt: string;
+};
+
+export type GenerationRow = {
+  id: string;
+  userId: string;
+  candidates: Record<StickerStyle, string>;
+  used: boolean;
+};
+
+export type DrawnRow = { drawId: string; drawnAt: string; sticker: StickerRow };
+
+export type ReportStatus = "pending" | "upheld" | "rejected";
+export type ReportRow = {
+  id: string;
+  reporterId: string;
+  stickerId: string;
+  reason: ReportReason;
+  status: ReportStatus;
+  createdAt: string;
+};
+
+// Stickers hidden by an upheld report never come back from any list or draw.
+export interface Store {
+  countGenerations(userId: string, date: string): Promise<number>;
+  createGeneration(g: {
+    id: string;
+    userId: string;
+    date: string;
+    candidates: Record<StickerStyle, string>;
+  }): Promise<void>;
+  getGeneration(id: string): Promise<GenerationRow | null>;
+  // Returns false when the generation was already turned into a sticker.
+  claimGeneration(id: string): Promise<boolean>;
+
+  createSticker(s: {
+    ownerId: string;
+    name: string;
+    bubble: string;
+    style: StickerStyle;
+    imagePath: string;
+    country: string;
+    date: string;
+  }): Promise<StickerRow>;
+  getSticker(id: string): Promise<StickerRow | null>;
+  hideSticker(id: string): Promise<void>;
+  countStickersMade(userId: string, date: string): Promise<number>;
+  listMade(userId: string): Promise<StickerRow[]>;
+
+  // Uniformly random over every sticker not owned by the user.
+  randomSticker(excludeOwnerId: string): Promise<StickerRow | null>;
+  createDraw(d: {
+    userId: string;
+    stickerId: string;
+    date: string;
+    usedCredit: boolean;
+  }): Promise<void>;
+  // Draws paid for by the daily allowance (credit draws are not counted).
+  countDailyDraws(userId: string, date: string): Promise<number>;
+  hasDrawn(userId: string, stickerId: string): Promise<boolean>;
+  listDrawn(userId: string): Promise<DrawnRow[]>;
+  // Newest sticker the user made or drew, whichever happened last.
+  latestInAlbum(userId: string): Promise<StickerRow | null>;
+
+  // Draw credits do not expire. Negative amounts spend them.
+  creditBalance(userId: string): Promise<number>;
+  addCredit(userId: string, amount: number, reason: string): Promise<void>;
+
+  // Returns false when this user already reported this sticker.
+  createReport(r: { reporterId: string; stickerId: string; reason: ReportReason }): Promise<boolean>;
+  getReport(id: string): Promise<ReportRow | null>;
+  listPendingReports(): Promise<(ReportRow & { sticker: StickerRow })[]>;
+  pendingReportsForSticker(stickerId: string): Promise<ReportRow[]>;
+  setReportStatus(ids: string[], status: ReportStatus): Promise<void>;
+
+  addPenalty(userId: string, until: string): Promise<void>;
+  // Latest end time of a penalty still in force, if any.
+  penaltyUntil(userId: string): Promise<string | null>;
+
+  // Erases the user and everything tied to them except the stickers they made:
+  // those stay in the pool and in other people's albums, no longer linked to anyone.
+  deleteAccount(userId: string): Promise<void>;
+
+  putFile(path: string, bytes: Buffer, contentType: string): Promise<void>;
+  fileUrl(path: string): string;
+}
+
+export function getStore(): Store {
+  return isLive ? supabaseStore : demoStore;
+}
+
+export function toSticker(row: StickerRow): Sticker {
+  return {
+    id: row.id,
+    serialNo: row.serialNo,
+    name: row.name,
+    bubble: row.bubble,
+    style: row.style,
+    imageUrl: getStore().fileUrl(row.imagePath),
+    country: row.country,
+  };
+}
