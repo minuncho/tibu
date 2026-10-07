@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { getUser, type User } from "./auth";
 
+// An error whose message is safe and useful to show to the user.
+export class PublicError extends Error {}
+
 export function fail(status: number, error: string) {
   return NextResponse.json({ error }, { status });
 }
@@ -13,8 +16,9 @@ export function withUser(handler: (req: Request, user: User) => Promise<Response
     try {
       return await handler(req, user);
     } catch (e) {
+      // Internal error text can contain secrets (e.g. a request header), so it stays in the server log.
       console.error(e);
-      return fail(500, e instanceof Error ? e.message : "Something went wrong");
+      return fail(500, e instanceof PublicError ? e.message : "Something went wrong. Please try again.");
     }
   };
 }

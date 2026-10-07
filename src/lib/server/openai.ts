@@ -1,5 +1,6 @@
 import type { StickerStyle } from "../types";
 import { OPENAI_API_KEY, OPENAI_IMAGE_MODEL } from "./env";
+import { PublicError } from "./http";
 
 // Target look for each style: see references/ at the project root.
 const COMMON =
@@ -44,7 +45,8 @@ export async function stylizePet(photo: Blob, style: StickerStyle): Promise<Buff
   const data = await res.json().catch(() => null);
   const b64 = data?.data?.[0]?.b64_json;
   if (!res.ok || !b64) {
-    throw new Error(data?.error?.message || `Image conversion failed (${res.status})`);
+    // OpenAI's own message (policy refusal, unverified organization, no credit) is safe to show.
+    throw new PublicError(data?.error?.message || `Image conversion failed (${res.status})`);
   }
   return Buffer.from(b64, "base64");
 }
