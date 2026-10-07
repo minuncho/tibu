@@ -83,9 +83,11 @@ export default function DrawPage() {
         <p className="note">
           {spinning
             ? "Rattle rattle..."
-            : left > 0
-              ? "Tap the machine to draw"
-              : "No draws left today. Make a sticker to earn one!"}
+            : !state
+              ? "Checking your draws..."
+              : left > 0
+                ? "Tap the machine to draw"
+                : "No draws left today. Make a sticker to earn one!"}
         </p>
         {message && <p className="error">{message}</p>}
       </div>
