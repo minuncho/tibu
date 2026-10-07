@@ -130,25 +130,3 @@ export async function downloadSticker(sticker: Sticker) {
   link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 10_000);
 }
-
-// Shrinks a phone photo before upload so it fits request size limits.
-export async function shrinkPhoto(file: File, maxSide = 1280): Promise<Blob> {
-  const url = URL.createObjectURL(file);
-  try {
-    const img = await loadImage(url);
-    const scale = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
-    const canvas = document.createElement("canvas");
-    canvas.width = Math.round(img.naturalWidth * scale);
-    canvas.height = Math.round(img.naturalHeight * scale);
-    canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
-    return await new Promise((resolve, reject) => {
-      canvas.toBlob(
-        (blob) => (blob ? resolve(blob) : reject(new Error("Could not read photo"))),
-        "image/jpeg",
-        0.9,
-      );
-    });
-  } finally {
-    URL.revokeObjectURL(url);
-  }
-}

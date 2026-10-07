@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import type { AppState } from "@/lib/types";
+import { CREATES_PER_DAY, type AppState } from "@/lib/types";
 import { getUser, isStaff } from "@/lib/server/auth";
 import { localDate, requestCountry } from "@/lib/server/day";
 import { aiEnabled, isLive } from "@/lib/server/env";
-import { createsLeft, drawsLeft } from "@/lib/server/quota";
+import { drawsLeft } from "@/lib/server/quota";
 import { getStore, toSticker } from "@/lib/server/store";
 
 export async function GET(req: Request) {
@@ -26,14 +26,15 @@ export async function GET(req: Request) {
     latest: null,
   };
   if (user) {
+    // One parallel wave of queries: every extra sequential step is a full round trip to the database.
     const store = getStore();
-    const [creates, draws, banned, latest] = await Promise.all([
-      createsLeft(user.id, date),
-      drawsLeft(user.id, date),
+    const [banned, generations, draws, latest] = await Promise.all([
       store.penaltyUntil(user.id),
+      store.countGenerations(user.id, date),
+      drawsLeft(user.id, date),
       store.latestInAlbum(user.id),
     ]);
-    state.createsLeft = creates;
+    state.createsLeft = banned ? 0 : Math.max(0, CREATES_PER_DAY - generations);
     state.drawsLeft = draws;
     state.bannedUntil = banned;
     state.latest = latest ? toSticker(latest) : null;

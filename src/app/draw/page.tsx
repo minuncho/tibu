@@ -10,7 +10,7 @@ import { useAppState } from "@/components/useAppState";
 import { api } from "@/lib/api";
 import { BASE_DRAWS_PER_DAY, type Sticker } from "@/lib/types";
 
-const SPIN_MS = 1500;
+const SPIN_MS = 1000;
 
 export default function DrawPage() {
   const { state, refresh } = useAppState();
@@ -30,7 +30,8 @@ export default function DrawPage() {
       ]);
       if (sticker) setResult(sticker);
       else setMessage("No stickers from other owners yet. Your draw was not used.");
-      await refresh();
+      // Not awaited: the sticker shows right away while the remaining count updates.
+      refresh().catch(() => {});
     } catch (e) {
       setMessage(e instanceof Error ? e.message : "Something went wrong");
     } finally {

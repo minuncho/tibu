@@ -3,12 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { CameraArt } from "@/components/Art";
+import { Cropper, type CropperHandle } from "@/components/Cropper";
 import { SpeechBubble, StickerCard } from "@/components/Sticker";
 import { DownloadButton, StickerView } from "@/components/StickerDetail";
 import { TopBar } from "@/components/TopBar";
 import { useAppState } from "@/components/useAppState";
 import { api, postJson } from "@/lib/api";
-import { shrinkPhoto } from "@/lib/render";
 import {
   BUBBLE_MAX,
   COUNTRY_CODES,
@@ -37,8 +37,9 @@ const count = (text: string) => [...text.trim()].length;
 export default function CreatePage() {
   const { state, refresh } = useAppState();
   const fileInput = useRef<HTMLInputElement>(null);
-  const [photo, setPhoto] = useState<Blob | null>(null);
-  const [preview, setPreview] = useState("");
+  const cropper = useRef<CropperHandle>(null);
+  // object URL of the photo being cropped
+  const [source, setSource] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [generation, setGeneration] = useState<Generation | null>(null);
@@ -55,23 +56,20 @@ export default function CreatePage() {
     if (saved) setGeneration(JSON.parse(saved));
   }, []);
 
-  async function pick(file: File | undefined) {
+  function pick(file: File | undefined) {
     if (!file) return;
     setError("");
-    try {
-      const small = await shrinkPhoto(file);
-      setPhoto(small);
-      setPreview(URL.createObjectURL(small));
-    } catch {
-      setError("Could not read that photo. Try another one.");
-    }
+    if (source) URL.revokeObjectURL(source);
+    setSource(URL.createObjectURL(file));
   }
 
   async function convert() {
-    if (!photo) return;
+    if (!cropper.current) return;
     setBusy(true);
     setError("");
     try {
+      // Only the square the owner framed is uploaded.
+      const photo = await cropper.current.crop();
       const form = new FormData();
       form.set("photo", photo, "pet.jpg");
       const result = await api<Generation>("/api/generate", { method: "POST", body: form });
@@ -239,10 +237,17 @@ export default function CreatePage() {
           </>
         ) : (
           <>
-            <button className="picker" aria-label="Choose a photo" onClick={() => fileInput.current?.click()}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              {preview ? <img src={preview} alt="" /> : <CameraArt />}
-            </button>
+            {source ? (
+              <Cropper ref={cropper} src={source} />
+            ) : (
+              <button
+                className="picker"
+                aria-label="Choose a photo"
+                onClick={() => fileInput.current?.click()}
+              >
+                <CameraArt />
+              </button>
+            )}
             <input
               ref={fileInput}
               type="file"
@@ -250,11 +255,18 @@ export default function CreatePage() {
               hidden
               onChange={(e) => pick(e.target.files?.[0])}
             />
-            <p className="note">
-              {preview ? "Tap the photo to change it" : "Tap to add a photo of your pet"}
-            </p>
+            {source ? (
+              <>
+                <p className="note">Drag to move, pinch or slide to zoom</p>
+                <button className="link" onClick={() => fileInput.current?.click()}>
+                  Choose another photo
+                </button>
+              </>
+            ) : (
+              <p className="note">Tap to add a photo of your pet</p>
+            )}
             {error && <p className="error">{error}</p>}
-            <button className="btn" disabled={!photo || left === 0} onClick={convert}>
+            <button className="btn" disabled={!source || left === 0} onClick={convert}>
               Convert photo
             </button>
             {state?.bannedUntil ? (

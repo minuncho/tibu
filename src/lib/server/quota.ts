@@ -4,9 +4,11 @@ import { getStore } from "./store";
 // Zero while a report penalty is in force.
 export async function createsLeft(userId: string, date: string) {
   const store = getStore();
-  if (await store.penaltyUntil(userId)) return 0;
-  const used = await store.countGenerations(userId, date);
-  return Math.max(0, CREATES_PER_DAY - used);
+  const [banned, used] = await Promise.all([
+    store.penaltyUntil(userId),
+    store.countGenerations(userId, date),
+  ]);
+  return banned ? 0 : Math.max(0, CREATES_PER_DAY - used);
 }
 
 // One free draw a day, plus one per sticker made that day. Unused ones expire at midnight.

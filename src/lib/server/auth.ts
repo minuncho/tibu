@@ -29,14 +29,18 @@ export async function getUser(): Promise<User | null> {
     const cookieStore = await cookies();
     return cookieStore.get(DEMO_COOKIE) ? DEMO_USER : null;
   }
+  // getClaims verifies the session token locally when the project uses asymmetric signing keys,
+  // which saves a round trip to the auth server on every request.
   const supabase = await supabaseServer();
-  const { data } = await supabase.auth.getUser();
-  if (!data.user) return null;
-  const meta = data.user.user_metadata || {};
+  const { data } = await supabase.auth.getClaims();
+  const claims = data?.claims;
+  if (!claims?.sub) return null;
+  const meta = (claims.user_metadata || {}) as Record<string, string | undefined>;
+  const email = typeof claims.email === "string" ? claims.email : "";
   return {
-    id: data.user.id,
-    name: meta.full_name || meta.name || data.user.email || "",
-    email: data.user.email || "",
+    id: claims.sub,
+    name: meta.full_name || meta.name || email,
+    email,
     avatarUrl: meta.avatar_url || meta.picture || null,
   };
 }

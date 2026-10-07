@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { AlbumArt, CameraArt, EmptyStickerArt, GachaArt } from "@/components/Art";
 import { StickerCard } from "@/components/Sticker";
 import { StickerDetail } from "@/components/StickerDetail";
-import { useAppState } from "@/components/useAppState";
+import { clearAppState, useAppState } from "@/components/useAppState";
 import { api } from "@/lib/api";
 
 export default function HomePage() {
@@ -46,6 +46,7 @@ export default function HomePage() {
     setDeleting(true);
     try {
       await api("/api/account", { method: "DELETE" });
+      clearAppState();
       router.replace("/login");
     } catch (e) {
       setDeleting(false);
@@ -56,6 +57,7 @@ export default function HomePage() {
 
   async function signOut() {
     await api("/api/auth/logout", { method: "POST" });
+    clearAppState();
     router.replace("/login");
   }
 
