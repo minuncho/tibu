@@ -37,6 +37,8 @@ https://platform.openai.com 에서 API 키 발급. (gpt-image 계열은 조직 �
 스태프 계정은 `STAFF_EMAILS` 에 구글 이메일을 쉼표로 구분해 넣습니다. 스태프는 홈 왼쪽 위 프로필 메뉴에 "Review reports" 가 보입니다.
 (데모 모드에서는 데모 유저가 스태프입니다.)
 
+서버 함수 지역은 `vercel.json` 에서 시드니(`syd1`)로 고정해 두었습니다. Supabase 프로젝트가 시드니(`ap-southeast-2`)에 있어서 둘을 붙여 둔 것이니, Supabase 지역을 옮기면 이 값도 같이 바꿔야 합니다.
+
 ### 5. GitHub / Vercel
 ```bash
 git init
