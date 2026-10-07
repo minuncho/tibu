@@ -66,6 +66,8 @@ export interface Store {
   ): Promise<{ total: number; rows: (StickerRow & { hidden: boolean })[] }>;
   countStickersMade(userId: string, date: string): Promise<number>;
   listMade(userId: string): Promise<StickerRow[]>;
+  // The user's own stickers that were taken down.
+  listRemovedMade(userId: string): Promise<StickerRow[]>;
 
   // A handful of other people's visible stickers, for the waiting screen. Roughly random.
   sampleStickers(excludeOwnerId: string, limit: number): Promise<StickerRow[]>;

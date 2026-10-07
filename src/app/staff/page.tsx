@@ -101,7 +101,7 @@ function AllStickers() {
 
   async function setHidden(sticker: StaffSticker, hidden: boolean) {
     const question = hidden
-      ? `Remove "${sticker.name}"? Its maker will be blocked from making stickers for ${PENALTY_DAYS} days.`
+      ? `Remove "${sticker.name}"? Its maker will see a notice. No penalty is applied.`
       : `Put "${sticker.name}" back?`;
     if (!window.confirm(question)) return;
     setBusy(true);

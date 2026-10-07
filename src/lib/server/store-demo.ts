@@ -121,6 +121,9 @@ export const demoStore: Store = {
     if (sticker) sticker.hidden = hidden;
     save(db);
   },
+  async listRemovedMade(userId) {
+    return load().stickers.filter((s) => s.ownerId === userId && s.hidden);
+  },
   async listAllStickers(offset, limit) {
     const all = [...load().stickers].sort((a, b) => b.serialNo - a.serialNo);
     return { total: all.length, rows: all.slice(offset, offset + limit) };

@@ -27,17 +27,20 @@ export async function GET(req: Request) {
     drawsLeft: 0,
     unlimited: false,
     bannedUntil: null,
+    removed: [],
     latest: null,
   };
   if (user) {
     // One parallel wave of queries: every extra sequential step is a full round trip to the database.
     const store = getStore();
-    const [banned, generations, draws, latest] = await Promise.all([
+    const [banned, generations, draws, latest, removed] = await Promise.all([
       store.penaltyUntil(user.id),
       store.countGenerations(user.id, date),
       drawsLeft(user.id, date),
       store.latestInAlbum(user.id),
+      store.listRemovedMade(user.id),
     ]);
+    state.removed = removed.map((s) => ({ id: s.id, serialNo: s.serialNo, name: s.name }));
     if (hasNoLimits(user)) {
       state.unlimited = true;
       state.createsLeft = UNLIMITED;

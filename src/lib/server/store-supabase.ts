@@ -126,6 +126,12 @@ export const supabaseStore: Store = {
   async setStickerHidden(id, hidden) {
     check(await db().from("stickers").update({ hidden }).eq("id", id));
   },
+  async listRemovedMade(userId) {
+    const rows = check(
+      await db().from("stickers").select("*").eq("owner_id", userId).eq("hidden", true),
+    );
+    return (rows as DbSticker[]).map(toRow);
+  },
   async listAllStickers(offset, limit) {
     const res = await db()
       .from("stickers")

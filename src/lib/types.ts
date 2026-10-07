@@ -56,6 +56,8 @@ export type AppState = {
   unlimited: boolean;
   // set while a report penalty blocks making stickers
   bannedUntil: string | null;
+  // the user's own stickers that staff took down; the home screen tells them once
+  removed: { id: string; serialNo: number; name: string }[];
   // newest sticker in the album, whether made or drawn
   latest: Sticker | null;
 };

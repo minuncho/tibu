@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AlbumArt, CameraArt, EmptyStickerArt, GachaArt } from "@/components/Art";
 import { Coffee } from "@/components/Coffee";
+import { RemovalNotice } from "@/components/RemovalNotice";
 import { StickerCard } from "@/components/Sticker";
 import { StickerDetail } from "@/components/StickerDetail";
 import { clearAppState, useAppState } from "@/components/useAppState";
@@ -110,6 +111,8 @@ export default function HomePage() {
           </div>
         )}
       </header>
+
+      {state && <RemovalNotice removed={state.removed} />}
 
       <div className="grid">
         <button

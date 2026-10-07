@@ -191,6 +191,36 @@ button {
   background: var(--surface);
 }
 
+/* One-time message under the date, e.g. "your sticker was removed" */
+.notice {
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.notice p {
+  flex: 1;
+  margin: 0;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.notice button {
+  flex: none;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--sky-deep);
+  color: var(--white);
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .grid {
   margin: auto 0;
   padding: 0 36px 12vh;
