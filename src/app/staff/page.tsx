@@ -16,18 +16,20 @@ import {
 
 type Tab = "reports" | "stickers";
 
-function Reports() {
+function Reports({ onCount }: { onCount: (count: number) => void }) {
   const [reports, setReports] = useState<StaffReport[] | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
     try {
-      setReports((await api<{ reports: StaffReport[] }>("/api/staff/reports")).reports);
+      const { reports } = await api<{ reports: StaffReport[] }>("/api/staff/reports");
+      setReports(reports);
+      onCount(reports.length);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong");
     }
-  }, []);
+  }, [onCount]);
 
   useEffect(() => {
     load();
@@ -199,6 +201,15 @@ function AllStickers() {
 export default function StaffPage() {
   const { state } = useAppState();
   const [tab, setTab] = useState<Tab>("stickers");
+  // Reports waiting for a decision, shown on the tab so they are not missed.
+  const [waiting, setWaiting] = useState(0);
+
+  useEffect(() => {
+    if (!state) return;
+    api<{ reports: StaffReport[] }>("/api/staff/reports")
+      .then((data) => setWaiting(data.reports.length))
+      .catch(() => {});
+  }, [state]);
 
   return (
     <main>
@@ -209,11 +220,11 @@ export default function StaffPage() {
           onChange={setTab}
           options={[
             ["stickers", "All stickers"],
-            ["reports", "Reports"],
+            ["reports", waiting > 0 ? `Reports (${waiting})` : "Reports"],
           ]}
         />
       </div>
-      {state && (tab === "reports" ? <Reports /> : <AllStickers />)}
+      {state && (tab === "reports" ? <Reports onCount={setWaiting} /> : <AllStickers />)}
     </main>
   );
 }
