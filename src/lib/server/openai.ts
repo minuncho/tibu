@@ -2,7 +2,7 @@ import type { StickerStyle } from "../types";
 import { OPENAI_API_KEY, OPENAI_IMAGE_MODEL } from "./env";
 import { PublicError } from "./http";
 
-// Target look for each style: see references/ at the project root.
+// Shared by all three styles; the sample pets in public/seed show the 2D target look.
 const COMMON =
   "Keep the same animal with its exact fur colors, markings and face so the owner recognizes their pet. " +
   "Show the whole pet, centered, with a little margin. " +

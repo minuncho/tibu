@@ -36,7 +36,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // translate="no": the app is English only, and browser auto-translation (Papago in the
-    // Naver app, Chrome) mangles the short button labels ("Home" became "집입니다").
+    // Naver app, Chrome) mangles the short button labels (the "Home" button came out as a sentence).
     <html lang="en" translate="no" className={`notranslate ${round.variable} ${korean.variable}`}>
       <body>
         <InAppBrowser />
