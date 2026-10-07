@@ -123,8 +123,8 @@ export const supabaseStore: Store = {
     const row = check(await db().from("stickers").select("*").eq("id", id).maybeSingle());
     return row ? toRow(row) : null;
   },
-  async hideSticker(id) {
-    check(await db().from("stickers").update({ hidden: true }).eq("id", id));
+  async setStickerHidden(id, hidden) {
+    check(await db().from("stickers").update({ hidden }).eq("id", id));
   },
   async listAllStickers(offset, limit) {
     const res = await db()

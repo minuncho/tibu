@@ -115,10 +115,10 @@ export const demoStore: Store = {
   async getSticker(id) {
     return load().stickers.find((s) => s.id === id) ?? null;
   },
-  async hideSticker(id) {
+  async setStickerHidden(id, hidden) {
     const db = load();
     const sticker = db.stickers.find((s) => s.id === id);
-    if (sticker) sticker.hidden = true;
+    if (sticker) sticker.hidden = hidden;
     save(db);
   },
   async listAllStickers(offset, limit) {

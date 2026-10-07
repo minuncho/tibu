@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Segment } from "@/components/Segment";
 import { StickerCard } from "@/components/Sticker";
-import { StickerDetail, StickerView } from "@/components/StickerDetail";
+import { StickerView } from "@/components/StickerDetail";
 import { TopBar } from "@/components/TopBar";
 import { useAppState } from "@/components/useAppState";
 import { api, postJson } from "@/lib/api";
@@ -95,6 +95,24 @@ function AllStickers() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [open, setOpen] = useState<StaffSticker | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function setHidden(sticker: StaffSticker, hidden: boolean) {
+    const question = hidden
+      ? `Remove "${sticker.name}"? Its maker will be blocked from making stickers for ${PENALTY_DAYS} days.`
+      : `Put "${sticker.name}" back?`;
+    if (!window.confirm(question)) return;
+    setBusy(true);
+    setError("");
+    try {
+      await postJson("/api/staff/stickers", { stickerId: sticker.id, hidden });
+      setStickers((all) => all.map((s) => (s.id === sticker.id ? { ...s, hidden } : s)));
+      setOpen(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong");
+    }
+    setBusy(false);
+  }
 
   const loadMore = useCallback(async (offset: number) => {
     setLoading(true);
@@ -148,7 +166,32 @@ function AllStickers() {
           </button>
         </div>
       )}
-      {open && <StickerDetail sticker={open} onClose={() => setOpen(null)} />}
+      {open && (
+        <div className="modal" onClick={() => !busy && setOpen(null)}>
+          <div className="modal-content card stack" onClick={(e) => e.stopPropagation()}>
+            {open.hidden && <p className="tag">Removed</p>}
+            <StickerView sticker={open} />
+            <div className="row">
+              {open.hidden ? (
+                <button className="btn" disabled={busy} onClick={() => setHidden(open, false)}>
+                  Put back
+                </button>
+              ) : (
+                <button
+                  className="btn btn-danger"
+                  disabled={busy}
+                  onClick={() => setHidden(open, true)}
+                >
+                  Remove
+                </button>
+              )}
+              <button className="btn btn-ghost" disabled={busy} onClick={() => setOpen(null)}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
