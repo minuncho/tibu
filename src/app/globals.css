@@ -640,6 +640,19 @@ a.back {
   height: 50%;
 }
 
+.waiting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.waiting-card {
+  width: 112px;
+  animation: fade 0.5s ease;
+}
+
 .candidates {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -868,6 +881,15 @@ a.back {
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 

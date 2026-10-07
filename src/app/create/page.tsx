@@ -8,6 +8,7 @@ import { Cropper, type CropperHandle } from "@/components/Cropper";
 import { SpeechBubble, StickerCard } from "@/components/Sticker";
 import { DownloadButton, StickerView } from "@/components/StickerDetail";
 import { TopBar } from "@/components/TopBar";
+import { WaitingStickers } from "@/components/WaitingStickers";
 import { useAppState } from "@/components/useAppState";
 import { api, postJson } from "@/lib/api";
 import { cameFromHome } from "@/lib/nav";
@@ -241,10 +242,9 @@ export default function CreatePage() {
       <div className="card stack">
         {busy ? (
           <>
-            <div className="picker">
-              <div className="spinner" />
-            </div>
+            <div className="spinner" />
             <p className="note">Drawing your pet in three styles. This can take a minute...</p>
+            <WaitingStickers />
           </>
         ) : (
           <>

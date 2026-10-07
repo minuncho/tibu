@@ -153,6 +153,25 @@ export const supabaseStore: Store = {
     return (rows as DbSticker[]).map(toRow);
   },
 
+  async sampleStickers(excludeOwnerId, limit) {
+    // A run of consecutive numbers starting at a random point: cheap, and varied enough here.
+    const total = count(await db().from("stickers").select("id", HEAD).eq("hidden", false));
+    if (total === 0) return [];
+    const take = limit * 2;
+    const offset = Math.floor(Math.random() * Math.max(1, total - take + 1));
+    const rows = check(
+      await db()
+        .from("stickers")
+        .select("*")
+        .eq("hidden", false)
+        .order("serial_no")
+        .range(offset, offset + take - 1),
+    );
+    return (rows as DbSticker[])
+      .filter((s) => s.owner_id !== excludeOwnerId)
+      .slice(0, limit)
+      .map(toRow);
+  },
   async randomSticker(excludeOwnerId) {
     const rows = check(await db().rpc("random_sticker", { uid: excludeOwnerId }));
     const first = (rows as DbSticker[] | null)?.[0];

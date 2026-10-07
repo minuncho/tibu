@@ -67,6 +67,9 @@ export interface Store {
   countStickersMade(userId: string, date: string): Promise<number>;
   listMade(userId: string): Promise<StickerRow[]>;
 
+  // A handful of other people's visible stickers, for the waiting screen. Roughly random.
+  sampleStickers(excludeOwnerId: string, limit: number): Promise<StickerRow[]>;
+
   // Uniformly random over every sticker not owned by the user.
   randomSticker(excludeOwnerId: string): Promise<StickerRow | null>;
   createDraw(d: {

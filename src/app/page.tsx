@@ -8,6 +8,7 @@ import { StickerCard } from "@/components/Sticker";
 import { StickerDetail } from "@/components/StickerDetail";
 import { clearAppState, useAppState } from "@/components/useAppState";
 import { api } from "@/lib/api";
+import { SUPPORT_URL } from "@/lib/legal";
 import { markHomeSeen } from "@/lib/nav";
 
 export default function HomePage() {
@@ -88,6 +89,11 @@ export default function HomePage() {
               <div className="profile-menu">
                 <p className="profile-name">{state.user.name}</p>
                 {state.user.isStaff && <Link href="/staff">Staff</Link>}
+                {SUPPORT_URL && (
+                  <a href={SUPPORT_URL} target="_blank" rel="noreferrer">
+                    Buy me a coffee
+                  </a>
+                )}
                 <Link href="/terms">Terms of Service</Link>
                 <Link href="/privacy">Privacy Policy</Link>
                 <button onClick={signOut}>Sign out</button>

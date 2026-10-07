@@ -1,3 +1,7 @@
+// Donation page (e.g. a Buy Me a Coffee or Ko-fi address). The profile menu shows a
+// "Buy me a coffee" item only while this is filled in.
+export const SUPPORT_URL = "";
+
 // Details shown on the Terms and Privacy pages.
 export const LEGAL = {
   appName: "Tibu",

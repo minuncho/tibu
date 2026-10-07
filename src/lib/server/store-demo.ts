@@ -132,6 +132,10 @@ export const demoStore: Store = {
     return visible(load()).filter((s) => s.ownerId === userId);
   },
 
+  async sampleStickers(excludeOwnerId, limit) {
+    const pool = visible(load()).filter((s) => s.ownerId !== excludeOwnerId);
+    return pool.sort(() => Math.random() - 0.5).slice(0, limit);
+  },
   async randomSticker(excludeOwnerId) {
     const pool = visible(load()).filter((s) => s.ownerId !== excludeOwnerId);
     if (pool.length === 0) return null;
