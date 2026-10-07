@@ -21,7 +21,7 @@ Each sticker gets a permanent serial number, starting from `0000`.
 | Making | 3 photo conversions per day |
 | Drawing | 3 draws per day, plus 1 for each sticker you finish that day |
 | Day reset | Midnight in your own time zone |
-| Reports | A sticker you drew can be reported. Staff review every report by hand. If upheld, the sticker is removed, its maker cannot make stickers for 7 days, and each reporter gets a bonus draw |
+| Reports | A sticker you drew can be reported. Staff review every report by hand. If upheld, the sticker is removed, its maker is told, and each reporter gets a bonus draw |
 | Account deletion | Erases your album and activity. Stickers you made stay in the pool, no longer linked to you |
 
 ## Tech

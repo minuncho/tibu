@@ -8,7 +8,6 @@ import { TopBar } from "@/components/TopBar";
 import { useAppState } from "@/components/useAppState";
 import { api, postJson } from "@/lib/api";
 import {
-  PENALTY_DAYS,
   REPORT_REASONS,
   type StaffReport,
   type StaffSticker,
@@ -73,7 +72,7 @@ function Reports({ onCount }: { onCount: (count: number) => void }) {
           <StickerView sticker={report.sticker} />
           <p className="note">
             {report.reason
-              ? `Remove: hides the sticker, blocks its maker for ${PENALTY_DAYS} days, rewards everyone who reported it.`
+              ? "Remove: hides the sticker, tells its maker, rewards everyone who reported it."
               : "This sticker was removed and its maker wrote back."}
           </p>
           <div className="row">
@@ -109,7 +108,7 @@ function AllStickers() {
 
   async function setHidden(sticker: StaffSticker, hidden: boolean) {
     const question = hidden
-      ? `Remove "${sticker.name}"? Its maker will see a notice. No penalty is applied.`
+      ? `Remove "${sticker.name}"? Its maker will see a notice.`
       : `Put "${sticker.name}" back?`;
     if (!window.confirm(question)) return;
     setBusy(true);

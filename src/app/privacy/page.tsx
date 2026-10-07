@@ -26,7 +26,7 @@ export default function PrivacyPage() {
         </li>
         <li>
           <strong>Activity:</strong> which stickers you made and drew and when, reports you sent,
-          and any penalties or bonus draws on your account.
+          and any bonus draws on your account.
         </li>
         <li>
           <strong>Technical data:</strong> your time zone and device language region, used to work
@@ -39,7 +39,7 @@ export default function PrivacyPage() {
       <ul>
         <li>to sign you in and show your profile;</li>
         <li>to make, store and display stickers and albums;</li>
-        <li>to apply daily limits, bonus draws and penalties;</li>
+        <li>to apply daily limits and bonus draws;</li>
         <li>to review reports and keep the service safe.</li>
       </ul>
       <p>We do not sell your data and we do not show ads.</p>

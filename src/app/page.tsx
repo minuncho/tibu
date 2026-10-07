@@ -132,9 +132,7 @@ export default function HomePage() {
             enter(
               "/create",
               state?.createsLeft,
-              state?.bannedUntil
-                ? "You can't make stickers right now."
-                : "No sticker chances left today. Come back tomorrow!",
+              "No sticker chances left today. Come back tomorrow!",
             )
           }
         >

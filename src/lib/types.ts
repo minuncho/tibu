@@ -11,10 +11,8 @@ export const NAME_MAX = 20;
 export const BUBBLE_MAX = 50;
 export const CREATES_PER_DAY = 3;
 export const BASE_DRAWS_PER_DAY = 3;
-// Upheld report: every reporter of that sticker gets this many draw credits,
-// and its maker cannot make stickers for this many days.
+// Upheld report: every reporter of that sticker gets this many draw credits.
 export const REPORT_REWARD = 1;
-export const PENALTY_DAYS = 7;
 
 export const REPORT_REASONS = {
   not_pet: "Not a pet",
@@ -56,8 +54,6 @@ export type AppState = {
   drawsLeft: number;
   // staff have no daily limits; createsLeft and drawsLeft are then just "plenty"
   unlimited: boolean;
-  // set while a report penalty blocks making stickers
-  bannedUntil: string | null;
   // the user's own stickers that staff took down; the home screen tells them once
   removed: { id: string; serialNo: number; name: string }[];
   // newest sticker in the album, whether made or drawn

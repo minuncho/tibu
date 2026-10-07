@@ -26,15 +26,13 @@ export async function GET(req: Request) {
     createsLeft: 0,
     drawsLeft: 0,
     unlimited: false,
-    bannedUntil: null,
     removed: [],
     latest: null,
   };
   if (user) {
     // One parallel wave of queries: every extra sequential step is a full round trip to the database.
     const store = getStore();
-    const [banned, generations, draws, latest, removed] = await Promise.all([
-      store.penaltyUntil(user.id),
+    const [generations, draws, latest, removed] = await Promise.all([
       store.countGenerations(user.id, date),
       drawsLeft(user.id, date),
       store.latestInAlbum(user.id),
@@ -46,9 +44,8 @@ export async function GET(req: Request) {
       state.createsLeft = UNLIMITED;
       state.drawsLeft = UNLIMITED;
     } else {
-      state.createsLeft = banned ? 0 : Math.max(0, CREATES_PER_DAY - generations);
+      state.createsLeft = Math.max(0, CREATES_PER_DAY - generations);
       state.drawsLeft = draws;
-      state.bannedUntil = banned;
     }
     state.latest = latest ? toSticker(latest) : null;
   }

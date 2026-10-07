@@ -281,23 +281,12 @@ export default function CreatePage() {
             <button className="btn" disabled={!source || left === 0} onClick={convert}>
               Convert photo
             </button>
-            {state?.bannedUntil ? (
-              <p className="error">
-                One of your stickers was removed after a report. You can make stickers again on{" "}
-                {new Date(state.bannedUntil).toLocaleDateString("en-US", {
-                  month: "long",
-                  day: "numeric",
-                })}
-                .
+            {state && (
+              <p className="note">
+                {state.unlimited
+                  ? "Staff account: no daily limit"
+                  : `${left} of ${CREATES_PER_DAY} chances left today`}
               </p>
-            ) : (
-              state && (
-                <p className="note">
-                  {state.unlimited
-                    ? "Staff account: no daily limit"
-                    : `${left} of ${CREATES_PER_DAY} chances left today`}
-                </p>
-              )
             )}
           </>
         )}

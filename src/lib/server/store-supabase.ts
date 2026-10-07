@@ -299,23 +299,6 @@ export const supabaseStore: Store = {
     );
   },
 
-  async addPenalty(userId, until) {
-    check(await db().from("penalties").insert({ user_id: userId, until }));
-  },
-  async penaltyUntil(userId) {
-    const row = check(
-      await db()
-        .from("penalties")
-        .select("until")
-        .eq("user_id", userId)
-        .gt("until", new Date().toISOString())
-        .order("until", { ascending: false })
-        .limit(1)
-        .maybeSingle(),
-    );
-    return (row as { until: string } | null)?.until ?? null;
-  },
-
   async deleteAccount(userId) {
     // Converted images that never became a sticker go; sticker images stay.
     const [generations, stickers] = await Promise.all([

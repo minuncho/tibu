@@ -24,7 +24,6 @@ type Db = {
   }[];
   credits: { userId: string; amount: number; reason: string }[];
   reports: ReportRow[];
-  penalties: { userId: string; until: string }[];
 };
 
 const SEEDS: [string, string, StickerStyle, string, string][] = [
@@ -44,7 +43,6 @@ function load(): Db {
     draws: [],
     credits: [],
     reports: [],
-    penalties: [],
   };
   for (const [name, bubble, style, imagePath, country] of SEEDS) {
     db.stickers.push({
@@ -220,20 +218,6 @@ export const demoStore: Store = {
     save(db);
   },
 
-  async addPenalty(userId, until) {
-    const db = load();
-    db.penalties.push({ userId, until });
-    save(db);
-  },
-  async penaltyUntil(userId) {
-    const now = new Date().toISOString();
-    const active = load()
-      .penalties.filter((p) => p.userId === userId && p.until > now)
-      .map((p) => p.until)
-      .sort();
-    return active.at(-1) ?? null;
-  },
-
   async deleteAccount(userId) {
     const db = load();
     const kept = new Set(db.stickers.filter((s) => s.ownerId === userId).map((s) => s.imagePath));
@@ -247,7 +231,6 @@ export const demoStore: Store = {
     db.draws = db.draws.filter((x) => x.userId !== userId);
     db.credits = db.credits.filter((x) => x.userId !== userId);
     db.reports = db.reports.filter((x) => x.reporterId !== userId);
-    db.penalties = db.penalties.filter((x) => x.userId !== userId);
     save(db);
   },
 

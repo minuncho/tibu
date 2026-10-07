@@ -106,10 +106,6 @@ export interface Store {
   pendingReportsForSticker(stickerId: string): Promise<ReportRow[]>;
   setReportStatus(ids: string[], status: ReportStatus): Promise<void>;
 
-  addPenalty(userId: string, until: string): Promise<void>;
-  // Latest end time of a penalty still in force, if any.
-  penaltyUntil(userId: string): Promise<string | null>;
-
   // Erases the user and everything tied to them except the stickers they made:
   // those stay in the pool and in other people's albums, no longer linked to anyone.
   deleteAccount(userId: string): Promise<void>;

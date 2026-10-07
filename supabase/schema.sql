@@ -65,21 +65,11 @@ create table if not exists reports (
 );
 create index if not exists reports_status on reports (status, created_at);
 
--- While now() < until, the user cannot make stickers.
-create table if not exists penalties (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users (id) on delete cascade,
-  until timestamptz not null,
-  created_at timestamptz not null default now()
-);
-create index if not exists penalties_user on penalties (user_id, until);
-
 alter table generations enable row level security;
 alter table stickers enable row level security;
 alter table draws enable row level security;
 alter table credits enable row level security;
 alter table reports enable row level security;
-alter table penalties enable row level security;
 
 -- Every visible sticker not owned by the caller has the same chance.
 create or replace function random_sticker(uid uuid)

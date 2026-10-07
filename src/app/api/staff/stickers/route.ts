@@ -16,7 +16,6 @@ export const GET = withUser(async (req, user) => {
 });
 
 // Staff take a sticker down without waiting for a report, or put one back.
-// A direct removal carries no penalty for the maker; they are only told about it.
 // Putting a sticker back only makes it visible again; rewards already given stay.
 export const POST = withUser(async (req, user) => {
   if (!isStaff(user)) return fail(403, "Staff only");
@@ -26,7 +25,7 @@ export const POST = withUser(async (req, user) => {
   const sticker = await store.getSticker(String(body.stickerId));
   if (!sticker) return fail(404, "Sticker not found");
 
-  if (body.hidden) await removeSticker(sticker.id, false);
+  if (body.hidden) await removeSticker(sticker.id);
   else await store.setStickerHidden(sticker.id, false);
   return NextResponse.json({ ok: true });
 });

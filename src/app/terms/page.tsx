@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage } from "@/components/Legal";
 import { LEGAL } from "@/lib/legal";
-import { BASE_DRAWS_PER_DAY, CREATES_PER_DAY, PENALTY_DAYS } from "@/lib/types";
+import { BASE_DRAWS_PER_DAY, CREATES_PER_DAY } from "@/lib/types";
 
 export const metadata: Metadata = { title: `Terms of Service - ${LEGAL.appName}` };
 
@@ -58,13 +58,12 @@ export default function TermsPage() {
         or unexpected, and we do not guarantee how a sticker will look.
       </p>
 
-      <h2>5. Reports and penalties</h2>
+      <h2>5. Reports and removals</h2>
       <ul>
         <li>You can report a sticker you have drawn. Our staff review every report by hand.</li>
         <li>
-          If a report is upheld, the sticker is removed from the draw pool and from all albums, its
-          maker cannot make stickers for {PENALTY_DAYS} days, and each person who reported it
-          receives a bonus draw.
+          If a report is upheld, the sticker is removed from the draw pool and from all albums,
+          its maker is told, and each person who reported it receives a bonus draw.
         </li>
         <li>If a report is not upheld, nothing is refunded.</li>
         <li>
