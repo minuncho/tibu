@@ -766,6 +766,19 @@ a.back {
     no-repeat right 14px center / 20px;
 }
 
+/* House rule shown before a photo is converted */
+.rule {
+  width: 100%;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+}
+
 .bonus,
 .tag {
   margin: 0;
