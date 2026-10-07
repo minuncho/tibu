@@ -11,7 +11,7 @@ export async function createsLeft(userId: string, date: string) {
   return banned ? 0 : Math.max(0, CREATES_PER_DAY - used);
 }
 
-// One free draw a day, plus one per sticker made that day. Unused ones expire at midnight.
+// A few free draws a day, plus one per sticker made that day. Unused ones expire at midnight.
 export async function dailyDrawsLeft(userId: string, date: string) {
   const store = getStore();
   const [made, drawn] = await Promise.all([

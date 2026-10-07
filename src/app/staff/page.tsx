@@ -62,26 +62,34 @@ function Reports({ onCount }: { onCount: (count: number) => void }) {
       {error && <p className="error">{error}</p>}
       {reports.map((report) => (
         <div key={report.id} className="card stack">
-          <p className="tag">{REPORT_REASONS[report.reason]}</p>
+          {report.reason ? (
+            <p className="tag">{REPORT_REASONS[report.reason]}</p>
+          ) : (
+            <>
+              <p className="tag">Reply from the maker</p>
+              <p className="quote">{report.reply}</p>
+            </>
+          )}
           <StickerView sticker={report.sticker} />
           <p className="note">
-            Remove: hides the sticker, blocks its maker for {PENALTY_DAYS} days, rewards everyone
-            who reported it.
+            {report.reason
+              ? `Remove: hides the sticker, blocks its maker for ${PENALTY_DAYS} days, rewards everyone who reported it.`
+              : "This sticker was removed and its maker wrote back."}
           </p>
           <div className="row">
             <button
-              className="btn btn-danger"
+              className={report.reason ? "btn btn-danger" : "btn"}
               disabled={busy}
               onClick={() => decide(report.id, true)}
             >
-              Remove
+              {report.reason ? "Remove" : "Put back"}
             </button>
             <button
               className="btn btn-ghost"
               disabled={busy}
               onClick={() => decide(report.id, false)}
             >
-              Keep
+              {report.reason ? "Keep" : "Keep removed"}
             </button>
           </div>
         </div>

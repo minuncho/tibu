@@ -10,7 +10,7 @@ export const STYLE_LABEL: Record<StickerStyle, string> = {
 export const NAME_MAX = 20;
 export const BUBBLE_MAX = 50;
 export const CREATES_PER_DAY = 3;
-export const BASE_DRAWS_PER_DAY = 1;
+export const BASE_DRAWS_PER_DAY = 3;
 // Upheld report: every reporter of that sticker gets this many draw credits,
 // and its maker cannot make stickers for this many days.
 export const REPORT_REWARD = 1;
@@ -23,6 +23,8 @@ export const REPORT_REASONS = {
   other: "Something else",
 } as const;
 export type ReportReason = keyof typeof REPORT_REASONS;
+// Longest reply a maker can send about a removed sticker.
+export const REPLY_MAX = 200;
 
 export type Sticker = {
   id: string;
@@ -64,7 +66,10 @@ export type AppState = {
 
 export type StaffReport = {
   id: string;
-  reason: ReportReason;
+  // null when this is a maker's reply about a removed sticker rather than a report
+  reason: ReportReason | null;
+  // the maker's reply text, when it is one
+  reply: string | null;
   createdAt: string;
   sticker: Sticker;
 };

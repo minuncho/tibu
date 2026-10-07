@@ -198,20 +198,41 @@ button {
   border-radius: 18px;
   background: var(--surface);
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .notice p {
-  flex: 1;
   margin: 0;
   color: var(--text);
   font-size: 13px;
   line-height: 1.45;
 }
 
+.notice p.error {
+  color: var(--danger);
+  text-align: left;
+}
+
+.notice textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--text);
+  font-size: 16px;
+  outline: none;
+  resize: none;
+}
+
+.notice-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .notice button {
-  flex: none;
   padding: 8px 16px;
   border: 0;
   border-radius: 14px;
@@ -219,6 +240,16 @@ button {
   color: var(--white);
   font-size: 13px;
   font-weight: 700;
+}
+
+.notice button.quiet {
+  border: 1px solid var(--line);
+  background: var(--white);
+  color: var(--ink);
+}
+
+.notice button:disabled {
+  opacity: 0.5;
 }
 
 .grid {
@@ -871,6 +902,18 @@ a.back {
 }
 
 /* ---------- Staff ---------- */
+
+.quote {
+  width: 100%;
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
 
 .staff-list {
   display: flex;

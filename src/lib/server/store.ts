@@ -26,11 +26,15 @@ export type GenerationRow = {
 export type DrawnRow = { drawId: string; drawnAt: string; sticker: StickerRow };
 
 export type ReportStatus = "pending" | "upheld" | "rejected";
+// A maker's reply about a removed sticker is stored in the same table as reports,
+// with the text after this prefix in place of a reason. Staff see both in one queue.
+export const REPLY_PREFIX = "reply:";
+
 export type ReportRow = {
   id: string;
   reporterId: string;
   stickerId: string;
-  reason: ReportReason;
+  reason: ReportReason | `reply:${string}`;
   status: ReportStatus;
   createdAt: string;
 };
@@ -92,7 +96,11 @@ export interface Store {
   addCredit(userId: string, amount: number, reason: string): Promise<void>;
 
   // Returns false when this user already reported this sticker.
-  createReport(r: { reporterId: string; stickerId: string; reason: ReportReason }): Promise<boolean>;
+  createReport(r: {
+    reporterId: string;
+    stickerId: string;
+    reason: ReportRow["reason"];
+  }): Promise<boolean>;
   getReport(id: string): Promise<ReportRow | null>;
   listPendingReports(): Promise<(ReportRow & { sticker: StickerRow })[]>;
   pendingReportsForSticker(stickerId: string): Promise<ReportRow[]>;

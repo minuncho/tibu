@@ -28,7 +28,7 @@ export default function TermsPage() {
           conversion runs, even if you do not finish the sticker.
         </li>
         <li>
-          You get {BASE_DRAWS_PER_DAY} draw per day, plus one for each sticker you finish that day.
+          You get {BASE_DRAWS_PER_DAY} draws per day, plus one for each sticker you finish that day.
           Unused daily draws expire at midnight in your time zone.
         </li>
         <li>Draws are random. Every available sticker made by someone else has the same chance.</li>

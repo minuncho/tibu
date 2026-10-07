@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server";
-import type { StaffReport } from "@/lib/types";
+import type { ReportReason, StaffReport } from "@/lib/types";
 import { isStaff } from "@/lib/server/auth";
 import { fail, withUser } from "@/lib/server/http";
 import { resolveReport } from "@/lib/server/reports";
-import { getStore, toSticker } from "@/lib/server/store";
+import { getStore, REPLY_PREFIX, toSticker } from "@/lib/server/store";
 
 export const GET = withUser(async (_req, user) => {
   if (!isStaff(user)) return fail(403, "Staff only");
   const reports: StaffReport[] = (await getStore().listPendingReports()).map((r) => ({
     id: r.id,
-    reason: r.reason,
+    reason: r.reason.startsWith(REPLY_PREFIX) ? null : (r.reason as ReportReason),
+    reply: r.reason.startsWith(REPLY_PREFIX) ? r.reason.slice(REPLY_PREFIX.length) : null,
     createdAt: r.createdAt,
     sticker: toSticker(r.sticker),
   }));

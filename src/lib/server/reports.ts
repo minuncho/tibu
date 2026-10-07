@@ -1,12 +1,15 @@
 import { PENALTY_DAYS, REPORT_REWARD } from "../types";
-import { getStore } from "./store";
+import { getStore, REPLY_PREFIX } from "./store";
 
 // Takes a sticker down: it leaves the draw pool and every album, and everyone with an open
 // report on it is rewarded. With penalize, its maker is also blocked from making stickers
 // for a while. Either way the maker is told on their home screen (see AppState.removed).
 export async function removeSticker(stickerId: string, penalize: boolean) {
   const store = getStore();
-  const open = await store.pendingReportsForSticker(stickerId);
+  // Replies from the maker wait in the same queue but are not reports, so they earn nothing.
+  const open = (await store.pendingReportsForSticker(stickerId)).filter(
+    (r) => !r.reason.startsWith(REPLY_PREFIX),
+  );
   await store.setStickerHidden(stickerId, true);
   if (open.length > 0) {
     await store.setReportStatus(
@@ -25,11 +28,18 @@ export async function removeSticker(stickerId: string, penalize: boolean) {
   }
 }
 
-// Staff decision on a report. Returns false if it was already decided.
+// Staff decision on a report or a maker's reply. Returns false if it was already decided.
 export async function resolveReport(reportId: string, upheld: boolean) {
   const store = getStore();
   const report = await store.getReport(reportId);
   if (!report || report.status !== "pending") return false;
+
+  if (report.reason.startsWith(REPLY_PREFIX)) {
+    // A maker's reply: agreeing with it puts the sticker back.
+    if (upheld) await store.setStickerHidden(report.stickerId, false);
+    await store.setReportStatus([report.id], upheld ? "upheld" : "rejected");
+    return true;
+  }
 
   if (upheld) {
     await removeSticker(report.stickerId, true);

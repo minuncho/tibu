@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import type { ReportReason, StickerStyle } from "../types";
+import type { StickerStyle } from "../types";
 import { SUPABASE_SERVICE_ROLE_KEY, SUPABASE_URL } from "./env";
 import type { ReportRow, ReportStatus, StickerRow, Store } from "./store";
 
@@ -30,7 +30,7 @@ type DbReport = {
   id: string;
   reporter_id: string;
   sticker_id: string;
-  reason: ReportReason;
+  reason: ReportRow["reason"];
   status: ReportStatus;
   created_at: string;
 };
