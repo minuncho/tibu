@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AlbumArt, CameraArt, EmptyStickerArt, GachaArt } from "@/components/Art";
@@ -8,6 +8,7 @@ import { StickerCard } from "@/components/Sticker";
 import { StickerDetail } from "@/components/StickerDetail";
 import { clearAppState, useAppState } from "@/components/useAppState";
 import { api } from "@/lib/api";
+import { markHomeSeen } from "@/lib/nav";
 
 export default function HomePage() {
   const router = useRouter();
@@ -19,6 +20,8 @@ export default function HomePage() {
   // id restarts the fade animation when the same notice is shown again
   const [toast, setToast] = useState({ id: 0, text: "" });
   const toastTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  useEffect(markHomeSeen, []);
 
   const now = new Date();
   const date = now.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });

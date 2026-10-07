@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { CameraArt } from "@/components/Art";
 import { Cropper, type CropperHandle } from "@/components/Cropper";
 import { SpeechBubble, StickerCard } from "@/components/Sticker";
@@ -9,6 +10,7 @@ import { DownloadButton, StickerView } from "@/components/StickerDetail";
 import { TopBar } from "@/components/TopBar";
 import { useAppState } from "@/components/useAppState";
 import { api, postJson } from "@/lib/api";
+import { cameFromHome } from "@/lib/nav";
 import {
   BUBBLE_MAX,
   COUNTRY_CODES,
@@ -35,6 +37,7 @@ const COUNTRIES = COUNTRY_CODES.map((code) => ({ code, name: regionNames.of(code
 const count = (text: string) => [...text.trim()].length;
 
 export default function CreatePage() {
+  const router = useRouter();
   const { state, refresh } = useAppState();
   const fileInput = useRef<HTMLInputElement>(null);
   const cropper = useRef<CropperHandle>(null);
@@ -52,9 +55,17 @@ export default function CreatePage() {
   const [done, setDone] = useState<Sticker | null>(null);
 
   useEffect(() => {
+    // Opening this address directly (a bookmark, a typed link, a refresh) starts at home instead.
+    // An unfinished sticker is kept and comes back when the camera is tapped.
+    if (!cameFromHome()) {
+      router.replace("/");
+      return;
+    }
     const saved = sessionStorage.getItem(PENDING_KEY);
     if (saved) setGeneration(JSON.parse(saved));
-  }, []);
+  }, [router]);
+
+  if (!cameFromHome()) return null;
 
   function pick(file: File | undefined) {
     if (!file) return;
