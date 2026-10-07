@@ -4,11 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AlbumArt, CameraArt, EmptyStickerArt, GachaArt } from "@/components/Art";
+import { Coffee } from "@/components/Coffee";
 import { StickerCard } from "@/components/Sticker";
 import { StickerDetail } from "@/components/StickerDetail";
 import { clearAppState, useAppState } from "@/components/useAppState";
 import { api } from "@/lib/api";
-import { SUPPORT_URL } from "@/lib/legal";
+import { SUPPORT_COUNTRIES, SUPPORT_URL } from "@/lib/legal";
 import { markHomeSeen } from "@/lib/nav";
 
 export default function HomePage() {
@@ -29,6 +30,9 @@ export default function HomePage() {
   const day = now.toLocaleDateString("en-US", { weekday: "long" });
 
   const latest = state?.latest ?? null;
+  const showCoffee =
+    Boolean(SUPPORT_URL && state) &&
+    (SUPPORT_COUNTRIES.length === 0 || SUPPORT_COUNTRIES.includes(state?.country ?? ""));
 
   // With no chances left the button still reacts to the tap, but shows a short notice instead of opening.
   function enter(path: string, left: number | undefined, notice: string) {
@@ -89,11 +93,6 @@ export default function HomePage() {
               <div className="profile-menu">
                 <p className="profile-name">{state.user.name}</p>
                 {state.user.isStaff && <Link href="/staff">Staff</Link>}
-                {SUPPORT_URL && (
-                  <a href={SUPPORT_URL} target="_blank" rel="noreferrer">
-                    Buy me a coffee
-                  </a>
-                )}
                 <Link href="/terms">Terms of Service</Link>
                 <Link href="/privacy">Privacy Policy</Link>
                 <button onClick={signOut}>Sign out</button>
@@ -152,6 +151,8 @@ export default function HomePage() {
           {latest ? <StickerCard sticker={latest} /> : <EmptyStickerArt />}
         </button>
       </div>
+
+      {showCoffee && <Coffee url={SUPPORT_URL} />}
 
       {toast.text && (
         <p key={toast.id} className="toast" role="status">

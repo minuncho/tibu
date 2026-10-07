@@ -1,6 +1,9 @@
-// Donation page (e.g. a Buy Me a Coffee or Ko-fi address). The profile menu shows a
-// "Buy me a coffee" item only while this is filled in.
+// Donation page (e.g. a Toss, Ko-fi or Buy Me a Coffee address). While this is filled in,
+// a coffee cup turns up on the home screen now and then and opens it.
 export const SUPPORT_URL = "";
+// Countries (ISO codes) whose visitors see the cup. Empty means everyone.
+// Toss only works in Korea, so the cup is limited to visitors there.
+export const SUPPORT_COUNTRIES: string[] = ["KR"];
 
 // Details shown on the Terms and Privacy pages.
 export const LEGAL = {

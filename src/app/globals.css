@@ -223,6 +223,19 @@ button {
   width: 62%;
 }
 
+/* Coffee cup that drops in at a random free spot (see components/Coffee.tsx) */
+.coffee {
+  position: fixed;
+  z-index: 4;
+  display: block;
+  animation: coffee 7s ease forwards;
+}
+
+.coffee svg {
+  width: 100%;
+  height: 100%;
+}
+
 /* Short notice that fades out by itself. */
 .toast {
   position: fixed;
@@ -910,6 +923,26 @@ a.back {
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@keyframes coffee {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) rotate(-12deg);
+  }
+  8% {
+    opacity: 1;
+    transform: scale(1.08) rotate(4deg);
+  }
+  14%,
+  88% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8) rotate(0);
   }
 }
 
