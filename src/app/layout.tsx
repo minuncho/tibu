@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Jua, M_PLUS_Rounded_1c } from "next/font/google";
+import { InAppBrowser } from "@/components/InAppBrowser";
 import "./globals.css";
 
 // Rounded gothic in the spirit of Gulim; Jua covers Hangul in pet names.
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${round.variable} ${korean.variable}`}>
       <body>
+        <InAppBrowser />
         <div className="app">{children}</div>
       </body>
     </html>

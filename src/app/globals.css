@@ -51,6 +51,35 @@ button {
   background: var(--white);
 }
 
+/* Bar shown inside chat-app browsers (KakaoTalk, Instagram, ...) */
+.inapp {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 10px 16px;
+  background: var(--text);
+  color: var(--white);
+  font-size: 13px;
+  line-height: 1.35;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.inapp button {
+  flex: none;
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--white);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
 /* ---------- Home ---------- */
 
 .home {

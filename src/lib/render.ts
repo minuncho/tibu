@@ -121,10 +121,24 @@ export async function renderSticker(sticker: Sticker): Promise<Blob> {
 
 export async function downloadSticker(sticker: Sticker) {
   const blob = await renderSticker(sticker);
+  const name = `sticker-${formatSerial(sticker.serialNo)}.png`;
+
+  // On phones the share sheet is the way into the photo library ("Save Image");
+  // a plain download lands in the Files app, or does nothing in some browsers.
+  const file = new File([blob], name, { type: "image/png" });
+  if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && navigator.canShare?.({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file] });
+      return;
+    } catch (e) {
+      // Closing the sheet is not a failure; anything else falls through to a download.
+      if (e instanceof DOMException && e.name === "AbortError") return;
+    }
+  }
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `sticker-${formatSerial(sticker.serialNo)}.png`;
+  link.download = name;
   document.body.appendChild(link);
   link.click();
   link.remove();
