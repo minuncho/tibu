@@ -198,7 +198,7 @@ function AllStickers() {
 
 export default function StaffPage() {
   const { state } = useAppState();
-  const [tab, setTab] = useState<Tab>("reports");
+  const [tab, setTab] = useState<Tab>("stickers");
 
   return (
     <main>
@@ -208,8 +208,8 @@ export default function StaffPage() {
           value={tab}
           onChange={setTab}
           options={[
-            ["reports", "Reports"],
             ["stickers", "All stickers"],
+            ["reports", "Reports"],
           ]}
         />
       </div>
