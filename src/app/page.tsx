@@ -84,7 +84,7 @@ export default function HomePage() {
             {menuOpen && (
               <div className="profile-menu">
                 <p className="profile-name">{state.user.name}</p>
-                {state.user.isStaff && <Link href="/staff">Review reports</Link>}
+                {state.user.isStaff && <Link href="/staff">Staff</Link>}
                 <Link href="/terms">Terms of Service</Link>
                 <Link href="/privacy">Privacy Policy</Link>
                 <button onClick={signOut}>Sign out</button>

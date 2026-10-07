@@ -1,14 +1,22 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { StickerView } from "@/components/StickerDetail";
+import { Segment } from "@/components/Segment";
+import { StickerCard } from "@/components/Sticker";
+import { StickerDetail, StickerView } from "@/components/StickerDetail";
 import { TopBar } from "@/components/TopBar";
 import { useAppState } from "@/components/useAppState";
 import { api, postJson } from "@/lib/api";
-import { PENALTY_DAYS, REPORT_REASONS, type StaffReport } from "@/lib/types";
+import {
+  PENALTY_DAYS,
+  REPORT_REASONS,
+  type StaffReport,
+  type StaffSticker,
+} from "@/lib/types";
 
-export default function StaffPage() {
-  const { state } = useAppState();
+type Tab = "reports" | "stickers";
+
+function Reports() {
   const [reports, setReports] = useState<StaffReport[] | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -22,8 +30,8 @@ export default function StaffPage() {
   }, []);
 
   useEffect(() => {
-    if (state) load();
-  }, [state, load]);
+    load();
+  }, [load]);
 
   async function decide(reportId: string, upheld: boolean) {
     setBusy(true);
@@ -37,48 +45,132 @@ export default function StaffPage() {
     setBusy(false);
   }
 
+  if (error && !reports) return <p className="error">{error}</p>;
+  if (!reports) {
+    return (
+      <div className="stack empty">
+        <div className="spinner" />
+      </div>
+    );
+  }
+  if (reports.length === 0) return <p className="note empty">No reports waiting.</p>;
+
   return (
-    <main>
-      <TopBar title="Reports" />
+    <div className="staff-list">
       {error && <p className="error">{error}</p>}
-      {reports === null ? (
-        !error && (
-          <div className="stack empty">
-            <div className="spinner" />
+      {reports.map((report) => (
+        <div key={report.id} className="card stack">
+          <p className="tag">{REPORT_REASONS[report.reason]}</p>
+          <StickerView sticker={report.sticker} />
+          <p className="note">
+            Remove: hides the sticker, blocks its maker for {PENALTY_DAYS} days, rewards everyone
+            who reported it.
+          </p>
+          <div className="row">
+            <button
+              className="btn btn-danger"
+              disabled={busy}
+              onClick={() => decide(report.id, true)}
+            >
+              Remove
+            </button>
+            <button
+              className="btn btn-ghost"
+              disabled={busy}
+              onClick={() => decide(report.id, false)}
+            >
+              Keep
+            </button>
           </div>
-        )
-      ) : reports.length === 0 ? (
-        <p className="note empty">No reports waiting.</p>
-      ) : (
-        <div className="staff-list">
-          {reports.map((report) => (
-            <div key={report.id} className="card stack">
-              <p className="tag">{REPORT_REASONS[report.reason]}</p>
-              <StickerView sticker={report.sticker} />
-              <p className="note">
-                Remove: hides the sticker, blocks its maker for {PENALTY_DAYS} days, rewards
-                everyone who reported it.
-              </p>
-              <div className="row">
-                <button
-                  className="btn btn-danger"
-                  disabled={busy}
-                  onClick={() => decide(report.id, true)}
-                >
-                  Remove
-                </button>
-                <button
-                  className="btn btn-ghost"
-                  disabled={busy}
-                  onClick={() => decide(report.id, false)}
-                >
-                  Keep
-                </button>
-              </div>
-            </div>
-          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Every sticker ever made, newest first. Removed ones are dimmed.
+function AllStickers() {
+  const [stickers, setStickers] = useState<StaffSticker[]>([]);
+  const [total, setTotal] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [open, setOpen] = useState<StaffSticker | null>(null);
+
+  const loadMore = useCallback(async (offset: number) => {
+    setLoading(true);
+    setError("");
+    try {
+      const page = await api<{ total: number; stickers: StaffSticker[] }>(
+        `/api/staff/stickers?offset=${offset}`,
+      );
+      setTotal(page.total);
+      setStickers((current) => (offset === 0 ? page.stickers : [...current, ...page.stickers]));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong");
+    }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    loadMore(0);
+  }, [loadMore]);
+
+  return (
+    <>
+      {total !== null && (
+        <p className="note" style={{ marginBottom: 12 }}>
+          {total} sticker{total === 1 ? "" : "s"} in total
+        </p>
+      )}
+      <div className="album-grid">
+        {stickers.map((sticker) => (
+          <button
+            key={sticker.id}
+            className="album-item"
+            data-hidden={sticker.hidden}
+            onClick={() => setOpen(sticker)}
+          >
+            <StickerCard sticker={sticker} />
+            {sticker.hidden && <span className="removed">Removed</span>}
+          </button>
+        ))}
+      </div>
+      {error && <p className="error">{error}</p>}
+      {loading && (
+        <div className="stack empty">
+          <div className="spinner" />
         </div>
       )}
+      {!loading && total !== null && stickers.length < total && (
+        <div className="actions">
+          <button className="btn btn-ghost" onClick={() => loadMore(stickers.length)}>
+            Load more
+          </button>
+        </div>
+      )}
+      {open && <StickerDetail sticker={open} onClose={() => setOpen(null)} />}
+    </>
+  );
+}
+
+export default function StaffPage() {
+  const { state } = useAppState();
+  const [tab, setTab] = useState<Tab>("reports");
+
+  return (
+    <main>
+      <TopBar title="Staff" />
+      <div className="toggles">
+        <Segment
+          value={tab}
+          onChange={setTab}
+          options={[
+            ["reports", "Reports"],
+            ["stickers", "All stickers"],
+          ]}
+        />
+      </div>
+      {state && (tab === "reports" ? <Reports /> : <AllStickers />)}
     </main>
   );
 }

@@ -65,6 +65,9 @@ export type StaffReport = {
   sticker: Sticker;
 };
 
+// A sticker as staff see it, including ones removed after a report.
+export type StaffSticker = Sticker & { hidden: boolean };
+
 export type Candidate = { style: StickerStyle; url: string };
 
 // ISO 3166-1 alpha-2 codes the owner can pick for the sticker flag.

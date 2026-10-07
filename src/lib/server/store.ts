@@ -59,6 +59,11 @@ export interface Store {
   }): Promise<StickerRow>;
   getSticker(id: string): Promise<StickerRow | null>;
   hideSticker(id: string): Promise<void>;
+  // Every sticker, newest number first, including hidden ones. For staff only.
+  listAllStickers(
+    offset: number,
+    limit: number,
+  ): Promise<{ total: number; rows: (StickerRow & { hidden: boolean })[] }>;
   countStickersMade(userId: string, date: string): Promise<number>;
   listMade(userId: string): Promise<StickerRow[]>;
 

@@ -828,6 +828,28 @@ a.back {
   transform: scale(0.96);
 }
 
+.album-item {
+  position: relative;
+}
+
+/* Staff view: stickers removed after a report */
+.album-item[data-hidden="true"] .sticker {
+  opacity: 0.35;
+}
+
+.removed {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--danger);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  transform: translateX(-50%);
+}
+
 .empty {
   padding: 48px 0;
 }

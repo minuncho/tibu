@@ -126,6 +126,21 @@ export const supabaseStore: Store = {
   async hideSticker(id) {
     check(await db().from("stickers").update({ hidden: true }).eq("id", id));
   },
+  async listAllStickers(offset, limit) {
+    const res = await db()
+      .from("stickers")
+      .select("*", { count: "exact" })
+      .order("serial_no", { ascending: false })
+      .range(offset, offset + limit - 1);
+    if (res.error) throw new Error(res.error.message);
+    return {
+      total: res.count ?? 0,
+      rows: (res.data as (DbSticker & { hidden: boolean })[]).map((s) => ({
+        ...toRow(s),
+        hidden: s.hidden,
+      })),
+    };
+  },
   async countStickersMade(userId, date) {
     return count(
       await db().from("stickers").select("id", HEAD).eq("owner_id", userId).eq("local_date", date),

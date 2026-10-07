@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Segment } from "@/components/Segment";
 import { StickerCard } from "@/components/Sticker";
 import { StickerDetail } from "@/components/StickerDetail";
 import { TopBar } from "@/components/TopBar";
@@ -10,22 +11,6 @@ import type { AlbumEntry, Sticker } from "@/lib/types";
 
 type Filter = "made" | "drawn";
 type Sort = "number" | "date";
-
-function Segment<T extends string>(props: {
-  value: T;
-  options: [T, string][];
-  onChange: (value: T) => void;
-}) {
-  return (
-    <div className="seg">
-      {props.options.map(([value, label]) => (
-        <button key={value} data-on={value === props.value} onClick={() => props.onChange(value)}>
-          {label}
-        </button>
-      ))}
-    </div>
-  );
-}
 
 export default function AlbumPage() {
   const { state } = useAppState();
