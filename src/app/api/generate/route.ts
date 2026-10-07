@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { STYLES, type Candidate, type StickerStyle } from "@/lib/types";
+import { hasNoLimits } from "@/lib/server/auth";
 import { localDate } from "@/lib/server/day";
 import { aiEnabled } from "@/lib/server/env";
 import { fail, withUser } from "@/lib/server/http";
@@ -14,7 +15,8 @@ const MAX_BYTES = 8 * 1024 * 1024;
 
 export const POST = withUser(async (req, user) => {
   const date = localDate(req);
-  if ((await createsLeft(user.id, date)) <= 0) {
+  // Staff have no daily limit, so they can stock the draw pool.
+  if (!hasNoLimits(user) && (await createsLeft(user.id, date)) <= 0) {
     return fail(403, "No sticker chances left today");
   }
 

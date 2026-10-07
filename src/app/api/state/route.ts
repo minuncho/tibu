@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { CREATES_PER_DAY, type AppState } from "@/lib/types";
-import { getUser, isStaff } from "@/lib/server/auth";
+import { getUser, hasNoLimits, isStaff } from "@/lib/server/auth";
 import { localDate, requestCountry } from "@/lib/server/day";
 import { aiEnabled, isLive } from "@/lib/server/env";
 import { drawsLeft } from "@/lib/server/quota";
 import { getStore, toSticker } from "@/lib/server/store";
+
+// What staff see as their remaining chances.
+const UNLIMITED = 999;
 
 export async function GET(req: Request) {
   const date = localDate(req);
@@ -22,6 +25,7 @@ export async function GET(req: Request) {
     country: requestCountry(req),
     createsLeft: 0,
     drawsLeft: 0,
+    unlimited: false,
     bannedUntil: null,
     latest: null,
   };
@@ -34,9 +38,15 @@ export async function GET(req: Request) {
       drawsLeft(user.id, date),
       store.latestInAlbum(user.id),
     ]);
-    state.createsLeft = banned ? 0 : Math.max(0, CREATES_PER_DAY - generations);
-    state.drawsLeft = draws;
-    state.bannedUntil = banned;
+    if (hasNoLimits(user)) {
+      state.unlimited = true;
+      state.createsLeft = UNLIMITED;
+      state.drawsLeft = UNLIMITED;
+    } else {
+      state.createsLeft = banned ? 0 : Math.max(0, CREATES_PER_DAY - generations);
+      state.drawsLeft = draws;
+      state.bannedUntil = banned;
+    }
     state.latest = latest ? toSticker(latest) : null;
   }
   return NextResponse.json(state);

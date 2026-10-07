@@ -292,7 +292,9 @@ export default function CreatePage() {
             ) : (
               state && (
                 <p className="note">
-                  {left} of {CREATES_PER_DAY} chances left today
+                  {state.unlimited
+                    ? "Staff account: no daily limit"
+                    : `${left} of ${CREATES_PER_DAY} chances left today`}
                 </p>
               )
             )}

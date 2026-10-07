@@ -77,9 +77,7 @@ export default function DrawPage() {
         >
           <GachaArt />
         </button>
-        {state && (
-          <Pips count={left} max={BASE_DRAWS_PER_DAY} />
-        )}
+        {state && !state.unlimited && <Pips count={left} max={BASE_DRAWS_PER_DAY} />}
         <p className="note">
           {spinning
             ? "Rattle rattle..."

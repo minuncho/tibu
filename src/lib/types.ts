@@ -52,6 +52,8 @@ export type AppState = {
   createsLeft: number;
   // daily draws plus saved credits
   drawsLeft: number;
+  // staff have no daily limits; createsLeft and drawsLeft are then just "plenty"
+  unlimited: boolean;
   // set while a report penalty blocks making stickers
   bannedUntil: string | null;
   // newest sticker in the album, whether made or drawn

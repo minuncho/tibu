@@ -12,6 +12,12 @@ export function isStaff(user: User) {
   return isLive ? STAFF_EMAILS.includes(user.email.toLowerCase()) : true;
 }
 
+// Real staff accounts skip the daily make/draw limits so they can stock the draw pool.
+// Not in demo mode, where the limits themselves need to stay testable.
+export function hasNoLimits(user: User) {
+  return isLive && isStaff(user);
+}
+
 export async function supabaseServer() {
   const cookieStore = await cookies();
   return createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
