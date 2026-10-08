@@ -13,6 +13,8 @@ import { api } from "@/lib/api";
 import { SUPPORT_COUNTRIES, SUPPORT_URL } from "@/lib/legal";
 import { markHomeSeen } from "@/lib/nav";
 
+const HINTS_KEY = "seenHints";
+
 export default function HomePage() {
   const router = useRouter();
   const { state } = useAppState();
@@ -25,6 +27,16 @@ export default function HomePage() {
   const toastTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(markHomeSeen, []);
+
+  // First visit only: a short label over each item says what it does. They are shown once
+  // the signed-in home is up, and count as seen when the visitor leaves this screen.
+  const signedIn = Boolean(state);
+  const [hints, setHints] = useState(false);
+  useEffect(() => {
+    if (!signedIn || localStorage.getItem(HINTS_KEY)) return;
+    setHints(true);
+    return () => localStorage.setItem(HINTS_KEY, "1");
+  }, [signedIn]);
 
   const now = new Date();
   const date = now.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
@@ -122,6 +134,7 @@ export default function HomePage() {
             enter("/draw", state?.drawsLeft, "No draws left today. Make a sticker to earn one!")
           }
         >
+          {hints && <span className="hint">Draw a pet</span>}
           <GachaArt />
         </button>
 
@@ -136,10 +149,12 @@ export default function HomePage() {
             )
           }
         >
+          {hints && <span className="hint">Make a sticker</span>}
           <CameraArt />
         </button>
 
         <button className="tile" aria-label="Sticker album" onClick={() => router.push("/album")}>
+          {hints && <span className="hint">Your album</span>}
           <AlbumArt />
         </button>
 
@@ -149,6 +164,7 @@ export default function HomePage() {
           disabled={!latest}
           onClick={() => setShowLatest(true)}
         >
+          {hints && <span className="hint">Latest sticker</span>}
           {latest ? <StickerCard sticker={latest} /> : <EmptyStickerArt />}
         </button>
       </div>

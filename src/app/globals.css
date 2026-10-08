@@ -262,6 +262,7 @@ button {
 
 /* Just the object on the page. */
 .tile {
+  position: relative;
   aspect-ratio: 1;
   padding: 0;
   border: 0;
@@ -273,6 +274,36 @@ button {
 
 .tile:active {
   transform: scale(0.92);
+}
+
+/* First-visit label over a home item */
+.hint {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  z-index: 1;
+  padding: 5px 12px;
+  border-radius: 12px;
+  background: var(--text);
+  color: var(--white);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  animation: hint 0.4s ease-out both;
+  pointer-events: none;
+}
+
+.hint::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  background: var(--text);
+  transform: rotate(45deg);
 }
 
 .tile .art {
@@ -1029,6 +1060,17 @@ a.back {
   100% {
     opacity: 0;
     transform: scale(0.8) rotate(0);
+  }
+}
+
+@keyframes hint {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 6px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
   }
 }
 
