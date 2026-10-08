@@ -100,6 +100,10 @@ export function flagUrl(country: string | null) {
   return country && /^[A-Z]{2}$/.test(country) ? `/flags/${country.toLowerCase()}.svg` : null;
 }
 
+// A negative number marks a staff test sticker, which has no place in the numbering.
+export const TEST_SERIAL = -1;
+
 export function formatSerial(n: number) {
+  if (n < 0) return "TEST";
   return String(n).padStart(4, "0");
 }

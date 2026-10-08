@@ -54,6 +54,9 @@ export default function CreatePage() {
   // Until the owner picks, preselect the detected country.
   const country = pickedCountry ?? state?.country ?? "";
   const [done, setDone] = useState<Sticker | null>(null);
+  // Staff only: make a throwaway sticker that is not saved and takes no number. On by default.
+  const [testOnly, setTestOnly] = useState(true);
+  const isStaff = Boolean(state?.user?.isStaff);
 
   useEffect(() => {
     // Opening this address directly (a bookmark, a typed link, a refresh) starts at home instead.
@@ -101,6 +104,7 @@ export default function CreatePage() {
     try {
       const { sticker } = await postJson<{ sticker: Sticker }>("/api/stickers", {
         generationId: generation.generationId,
+        test: isStaff && testOnly,
         style,
         name,
         bubble,
@@ -122,7 +126,11 @@ export default function CreatePage() {
         <TopBar title="Sticker ready!" />
         <div className="card stack">
           <StickerView sticker={done} />
-          <p className="bonus">+1 bonus draw for today</p>
+          <p className="bonus">
+            {done.serialNo < 0
+              ? "Test sticker: not saved, no number used"
+              : "+1 bonus draw for today"}
+          </p>
           <div className="actions" style={{ marginTop: 0 }}>
             <DownloadButton sticker={done} />
             <Link className="btn btn-ghost" href="/draw">
@@ -226,6 +234,16 @@ export default function CreatePage() {
             </>
           )}
 
+          {isStaff && chosen && (
+            <label className="check">
+              <input
+                type="checkbox"
+                checked={testOnly}
+                onChange={(e) => setTestOnly(e.target.checked)}
+              />
+              Test only (not saved, no number)
+            </label>
+          )}
           {error && <p className="error">{error}</p>}
           <button className="btn" disabled={!ready || busy} onClick={make}>
             {busy ? "Making..." : "Make sticker"}

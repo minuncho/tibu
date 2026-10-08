@@ -1,5 +1,14 @@
 import { NextResponse } from "next/server";
-import { BUBBLE_MAX, COUNTRY_CODES, NAME_MAX, STYLES, type StickerStyle } from "@/lib/types";
+import {
+  BUBBLE_MAX,
+  COUNTRY_CODES,
+  NAME_MAX,
+  STYLES,
+  TEST_SERIAL,
+  type Sticker,
+  type StickerStyle,
+} from "@/lib/types";
+import { isStaff } from "@/lib/server/auth";
 import { localDate } from "@/lib/server/day";
 import { fail, withUser } from "@/lib/server/http";
 import { getStore, toSticker } from "@/lib/server/store";
@@ -27,6 +36,21 @@ export const POST = withUser(async (req, user) => {
   if (!generation || generation.userId !== user.id) return fail(404, "Photo not found");
   if (!(await store.claimGeneration(generation.id))) {
     return fail(409, "This photo was already made into a sticker");
+  }
+
+  // Staff test run: build the sticker for the result screen without saving it. It takes no
+  // serial number and never enters the album, the draw pool or the day's bonus draw.
+  if (body.test === true && isStaff(user)) {
+    const sticker: Sticker = {
+      id: `test-${generation.id}`,
+      serialNo: TEST_SERIAL,
+      name,
+      bubble,
+      style,
+      imageUrl: store.fileUrl(generation.candidates[style]),
+      country,
+    };
+    return NextResponse.json({ sticker });
   }
 
   const row = await store.createSticker({
