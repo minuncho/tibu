@@ -11,3 +11,6 @@ next-env.d.ts
 # Local notes and style references (not part of the app)
 references/
 *.rtf
+
+# Project memory for Claude sessions (local only)
+CLAUDE.md
