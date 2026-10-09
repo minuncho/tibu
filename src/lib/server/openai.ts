@@ -6,12 +6,15 @@ import { PublicError } from "./http";
 // unless told plainly not to, hence the many "no ..." clauses.
 
 // Shared by the two drawn styles.
-const COMMON =
-  "Keep the same animal so the owner recognizes their pet: the same main colors, with its markings in the same places. " +
+const COMMON_REST =
   "Keep the pose from the photo: a sitting pet stays sitting, a lying pet stays lying, facing the same way. " +
   "Show the whole pet, centered, with a little margin. " +
   "Fully transparent background. " +
   "No text, no border, no frame, no ground shadow, no props.";
+
+const COMMON =
+  "Keep the same animal so the owner recognizes their pet: the same main colors, with its markings in the same places. " +
+  COMMON_REST;
 
 // What the owner cares about most in the drawn styles: the pet is redesigned as a simple
 // mascot with no fur at all. Even "rounded fluffy volumes" read as fur to them; the edge
@@ -37,12 +40,26 @@ const PROMPTS: Record<StickerStyle, string> = {
     "cut off by the edge of the photo. Do not add or complete anything. " +
     "Output only the unchanged pet on a fully transparent background, with clean edges and no outline, " +
     "shadow, text or border.",
-  // 3D: a smooth in-game character model with soft shading.
+  // 3D: a glossy inflated vinyl toy, tuned against five renders the owner picked as the look
+  // they want. It does not use DESIGN: what matters here is very few large smooth volumes
+  // (a fluffy coat must not turn into stacked lobes) and a high-gloss finish.
   "3d":
-    "Turn this pet into a 3D character model from a classic monster-collecting video game, shown as a clean official render. " +
-    DESIGN +
-    "The surface is perfectly smooth and untextured, like molded plastic, in plain solid colors, with soft simple shading: a gentle highlight and a clear soft shadow on each rounded form to show its volume. " +
-    COMMON,
+    "Turn this pet into a glossy collectible vinyl toy figure, shown as a clean 3D render. " +
+    "Build the figure from very few large simple volumes: one smooth egg-shaped head, one smooth plump body, four short thick legs, two simple ears and a simple tail. " +
+    "Long hairy ears become plain smooth flaps with no grooves. " +
+    "Each of these is a single clean, convex, rounded form like an inflated balloon or a glazed ceramic toy, and they join with soft smooth transitions. " +
+    "Never break a form into smaller lumps: no stacked lobes, no ridges, no creases, no folds, no rolls, no cloud-like bumps, no scalloped edges. " +
+    "Fur is never shown or hinted at: no hairs, no tufts, no fluff. " +
+    "A fluffy coat or a ruff simply makes the head and body one size bigger and rounder, still perfectly plain and smooth, like a polished pebble. " +
+    "The surface is seamless with no texture. " +
+    "High-gloss finish with only a few broad, soft highlights: one on the top of the head, one on the body, small ones on ears and legs, plus soft warm shadows underneath that show the volume. " +
+    "Soft even studio lighting. " +
+    "Proportions of a cute toy: a large head, a plump body, short stubby legs with plain rounded feet and no toes. " +
+    "Face: two small round glossy black bead eyes set wide apart, each with one tiny white highlight; a small glossy rounded nose; a small friendly smiling mouth, never a frown. " +
+    "No eyelids, no eyebrows, no whiskers, no colored iris. " +
+    "Use only one to three flat solid colors taken from the pet; markings become a few large clean patches with smooth edges, and a striped coat keeps only a few wide, evenly spaced stripes. " +
+    "Keep the same animal so the owner recognizes their pet: its breed shape, main colors, and markings in the same places. " +
+    COMMON_REST,
   // 2D: outlined cel art like the stickers that come in snack bread. A flat, lineless
   // version did not read as "2D" to the owner.
   "2d":
