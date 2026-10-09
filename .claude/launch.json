@@ -16,6 +16,7 @@
       "runtimeArgs": [
         "NEXT_PUBLIC_SUPABASE_URL=",
         "OPENAI_API_KEY=",
+        "TOSS_MTLS_CERT=",
         "TOSS_DEV_ANON=1",
         "TOSS_SESSION_SECRET=local-dev-secret",
         "npm",
@@ -26,6 +27,21 @@
         "3001"
       ],
       "port": 3001
+    },
+    {
+      "name": "toss",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "/Users/suajo/Desktop/tibu-toss",
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "5173",
+        "--strictPort"
+      ],
+      "port": 5173
     }
   ]
 }
