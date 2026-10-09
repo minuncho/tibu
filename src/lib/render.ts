@@ -2,7 +2,6 @@
 
 import { flagUrl, formatSerial, STICKER_BGS, type Sticker } from "./types";
 
-const INK = "#a35f6d";
 const STICKER_RATIO = 1.18;
 
 function loadImage(url: string) {
@@ -67,11 +66,11 @@ function drawSticker(
   const serial = formatSerial(sticker.serialNo);
   ctx.font = `800 ${5.2 * u}px ${family}`;
   const pillWidth = ctx.measureText(serial).width + 6 * u;
-  ctx.fillStyle = "#f7cac9";
+  ctx.fillStyle = sticker.bg && sticker.bg !== "white" ? STICKER_BGS[sticker.bg] : "#f7cac9";
   ctx.beginPath();
   ctx.roundRect(6 * u, 6 * u, pillWidth, 9 * u, 4.5 * u);
   ctx.fill();
-  ctx.fillStyle = INK;
+  ctx.fillStyle = "#4b2f37";
   ctx.textAlign = "left";
   ctx.fillText(serial, 9 * u, midY);
 

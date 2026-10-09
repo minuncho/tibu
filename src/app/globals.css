@@ -283,17 +283,11 @@ button {
   flex: 1;
 }
 
-/* Today's breads and the stickers that came out of them; scrolls sideways when there are many. */
+/* Up to three of today's breads and the stickers that came out of them. */
 .shelf-row {
-  justify-content: safe center;
+  justify-content: center;
   gap: 8px;
   min-height: 88px;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.shelf-row::-webkit-scrollbar {
-  display: none;
 }
 
 .slot {
@@ -457,6 +451,7 @@ button {
   padding: 0 3cqw;
   border-radius: 4.5cqw;
   background: var(--sky);
+  color: var(--text);
   font-size: 5.2cqw;
   font-weight: 800;
   line-height: 9cqw;

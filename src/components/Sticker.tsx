@@ -33,7 +33,13 @@ export function StickerCard({ sticker }: Props) {
           }}
         />
         <div className="sticker-head">
-          <span className="sticker-no">
+          {/* The number sits on the sticker's own color; a white sticker gets the theme pink. */}
+          <span
+            className="sticker-no"
+            style={
+              sticker.bg && sticker.bg !== "white" ? { background: STICKER_BGS[sticker.bg] } : undefined
+            }
+          >
             {sticker.serialNo === null ? "????" : formatSerial(sticker.serialNo)}
           </span>
           <span className="sticker-name" style={{ fontSize: `${nameSize}cqw` }}>

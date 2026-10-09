@@ -17,6 +17,8 @@ const HINTS_KEY = "seenHints";
 const BREADS = 12;
 // Staff have no limit, so their shelf always shows this many breads.
 const STAFF_BREADS = 3;
+// How many breads and stickers the home row holds.
+const SHOWN = 3;
 
 function preload(url: string) {
   return new Promise<void>((resolve) => {
@@ -73,6 +75,10 @@ export default function HomePage() {
     const i = positions.indexOf(slot);
     return i >= 0 ? drawn[i] : null;
   });
+  // Only three fit on the screen: the breads still to open first, then the newest stickers.
+  const breadSlots = slots.flatMap((s, slot) => (s ? [] : [slot]));
+  const newestStickers = positions.slice().reverse();
+  const visible = [...breadSlots, ...newestStickers].slice(0, SHOWN).sort((a, b) => a - b);
 
   async function openBread(slot: number) {
     if (opening !== null) return;
@@ -189,8 +195,9 @@ export default function HomePage() {
       <div className="shelves">
         <section className="shelf">
           <div className="shelf-items shelf-row">
-            {slots.map((sticker, slot) =>
-              sticker ? (
+            {visible.map((slot) => {
+              const sticker = slots[slot];
+              return sticker ? (
                 <button
                   key={slot}
                   className="slot slot-sticker"
@@ -207,12 +214,12 @@ export default function HomePage() {
                   data-spin={opening === slot}
                   onClick={() => openBread(slot)}
                 >
-                  {hints && slot === drawn.length && <span className="hint">Open one</span>}
+                  {hints && slot === breadSlots[0] && <span className="hint">Open one</span>}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img className="art" src={`/art/bread-${looks[slot % looks.length]}.png`} alt="" draggable={false} />
                 </button>
-              ),
-            )}
+              );
+            })}
             {state && breadsLeft === 0 && (
               <p className="shelf-note">Make a sticker to get another snack</p>
             )}
