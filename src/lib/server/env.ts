@@ -17,7 +17,7 @@ export const STAFF_EMAILS = ["minunsyc@gmail.com"].concat(
     .map((email) => email.trim().toLowerCase())
     .filter(Boolean),
 );
-export const OPENAI_IMAGE_MODEL = clean(process.env.OPENAI_IMAGE_MODEL) || "gpt-image-2.5-sunburst";
+export const OPENAI_IMAGE_MODEL = clean(process.env.OPENAI_IMAGE_MODEL) || "gpt-image-1";
 
 // Toss in-app version (tibu-toss). The certificate and key are PEM text from the Apps in Toss
 // console; hosting dashboards often store line breaks as a literal "\n", so both forms work.
