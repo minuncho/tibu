@@ -40,24 +40,31 @@ const PROMPTS: Record<StickerStyle, string> = {
     "cut off by the edge of the photo. Do not add or complete anything. " +
     "Output only the unchanged pet on a fully transparent background, with clean edges and no outline, " +
     "shadow, text or border.",
-  // 3D: a glossy inflated vinyl toy, tuned against five renders the owner picked as the look
-  // they want. It does not use DESIGN: what matters here is very few large smooth volumes
-  // (a fluffy coat must not turn into stacked lobes) and a high-gloss finish.
+  // 3D: a solid molded toy figure, tuned against five renders the owner picked as the look
+  // they want. It does not use DESIGN. What matters to them: very few large smooth forms (a
+  // fluffy coat must not turn into stacked lobes), the animal's real body shape (not a
+  // balloon), bold saturated colors, and gloss only on top of the head.
   "3d":
-    "Turn this pet into a glossy collectible vinyl toy figure, shown as a clean 3D render. " +
-    "Build the figure from very few large simple volumes: one smooth egg-shaped head, one smooth plump body, four short thick legs, two simple ears and a simple tail. " +
-    "Long hairy ears become plain smooth flaps with no grooves. " +
-    "Each of these is a single clean, convex, rounded form like an inflated balloon or a glazed ceramic toy, and they join with soft smooth transitions. " +
+    "Turn this pet into a solid molded vinyl toy figure, shown as a clean 3D render. " +
+    "It is a firm, solid sculpted figure, not inflated and not a balloon: keep the animal's real body shape and its distinctive features (a long body stays long, a thin tail stays thin, a flat body stays flat, a crest or spikes stay as crisp simple shapes), just simplified and a little chubbier, with a slightly larger head and shorter, thicker legs. " +
+    "Build it from very few large simple forms with clean smooth surfaces and soft smooth transitions. " +
     "Never break a form into smaller lumps: no stacked lobes, no ridges, no creases, no folds, no rolls, no cloud-like bumps, no scalloped edges. " +
     "Fur is never shown or hinted at: no hairs, no tufts, no fluff. " +
     "A fluffy coat or a ruff simply makes the head and body one size bigger and rounder, still perfectly plain and smooth, like a polished pebble. " +
+    "Long hairy ears become plain smooth flaps with no grooves, and a bushy tail becomes one plain smooth shape. " +
+    "All four legs stay clearly visible as short thick stubs. " +
     "The surface is seamless with no texture. " +
-    "High-gloss finish with only a few broad, soft highlights: one on the top of the head, one on the body, small ones on ears and legs, plus soft warm shadows underneath that show the volume. " +
-    "Soft even studio lighting. " +
-    "Proportions of a cute toy: a large head, a plump body, short stubby legs with plain rounded feet and no toes. " +
-    "Face: two small round glossy black bead eyes set wide apart, each with one tiny white highlight; a small glossy rounded nose; a small friendly smiling mouth, never a frown. " +
+    "Finish: smooth semi-gloss hard plastic, like a new toy, not clay, not rubber, not wax. " +
+    "The render is sharp with crisp clean silhouettes, not soft-focus, hazy or glowing. " +
+    "Light colors get one clear, well-defined highlight on the top of the head and a gentle sheen on the upper back; the legs, belly, ears, tail and cheeks have no highlights. " +
+    "Dark colors stay nearly matte with only a faint sheen. " +
+    "No shiny streaks, no wet or glassy look. " +
+    "Soft even studio lighting with gentle shadows underneath that show the volume. " +
+    "Colors: pick the pet's two or three characteristic colors and make them bold, rich and saturated, as solid opaque toy paint: white stays a clean bright white, cream becomes a warm golden yellow, tan becomes a strong caramel orange, brown a deep chocolate, gray a strong medium-dark slate gray, black a true black. " +
+    "Never pale, pastel, washed out, milky or translucent. " +
+    "Markings become a few large clean patches with crisp edges and strong contrast, and a striped coat keeps only three or four wide stripes on the back and none on the legs or face. " +
+    "Face: two small round glossy black bead eyes set wide apart, each with one tiny white highlight; a small dark rounded nose; a small friendly smiling mouth, never a frown. " +
     "No eyelids, no eyebrows, no whiskers, no colored iris. " +
-    "Use only one to three flat solid colors taken from the pet; markings become a few large clean patches with smooth edges, and a striped coat keeps only a few wide, evenly spaced stripes. " +
     "Keep the same animal so the owner recognizes their pet: its breed shape, main colors, and markings in the same places. " +
     COMMON_REST,
   // 2D: outlined cel art like the stickers that come in snack bread. A flat, lineless
