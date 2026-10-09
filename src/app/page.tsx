@@ -246,10 +246,10 @@ export default function HomePage() {
                 </button>
               ),
             )}
-            {state && breadsLeft === 0 && (
-              <p className="shelf-note">Make a sticker to get another snack</p>
-            )}
           </div>
+          {state && breadsLeft === 0 && (
+            <p className="shelf-note">Make a sticker to get another snack</p>
+          )}
         </section>
       </div>
 

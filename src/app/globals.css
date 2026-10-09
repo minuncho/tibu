@@ -304,9 +304,10 @@ button {
 }
 
 .shelf-note {
-  margin: 0 0 14px;
+  margin: 14px 0 0;
   font-size: 13px;
   color: var(--ink-soft);
+  text-align: center;
 }
 
 .detail-report {
