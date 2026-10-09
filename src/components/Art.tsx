@@ -11,7 +11,7 @@ const SKY_PALE = "#e3f3ff";
 const YELLOW = "#ffe9a8";
 const PINK = "#ffc9d6";
 
-export function GachaArt({ size }: ArtProps = {}) {
+export function GachaArtFlat({ size }: ArtProps = {}) {
   // [x, y, top color]: two-tone capsules, white lower half
   const capsules: [number, number, string][] = [
     [100, 50, PINK],
@@ -48,7 +48,7 @@ export function GachaArt({ size }: ArtProps = {}) {
   );
 }
 
-export function CameraArt({ size }: ArtProps = {}) {
+export function CameraArtFlat({ size }: ArtProps = {}) {
   return (
     <svg viewBox="0 0 200 200" className="art" width={size} height={size} aria-hidden>
       <rect x="72" y="42" width="56" height="34" rx="14" fill={SKY_DEEP} />
@@ -64,7 +64,7 @@ export function CameraArt({ size }: ArtProps = {}) {
   );
 }
 
-export function AlbumArt({ size }: ArtProps = {}) {
+export function AlbumArtFlat({ size }: ArtProps = {}) {
   return (
     <svg viewBox="0 0 200 200" className="art" width={size} height={size} aria-hidden>
       <rect x="44" y="32" width="124" height="148" rx="20" fill={SKY_PALE} />
@@ -85,6 +85,16 @@ export function AlbumArt({ size }: ArtProps = {}) {
     </svg>
   );
 }
+
+// 3D-look versions: rendered images in public/art, used on screen.
+function Art3d({ name }: { name: string }) {
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img className="art" src={`/art/${name}.png`} alt="" draggable={false} />;
+}
+
+export const GachaArt = () => <Art3d name="gacha" />;
+export const CameraArt = () => <Art3d name="camera" />;
+export const AlbumArt = () => <Art3d name="album" />;
 
 // Empty slot shown while the album is empty.
 export function EmptyStickerArt() {

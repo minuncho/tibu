@@ -1,7 +1,11 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ImageResponse } from "next/og";
-import { AlbumArt, CameraArt, GachaArt } from "@/components/Art";
+import {
+  AlbumArtFlat as AlbumArt,
+  CameraArtFlat as CameraArt,
+  GachaArtFlat as GachaArt,
+} from "@/components/Art";
 
 export const alt = "Tibu: turn your pet into a sticker and collect pets from around the world";
 export const size = { width: 1200, height: 630 };
