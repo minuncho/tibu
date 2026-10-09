@@ -26,7 +26,7 @@ export default async function OpenGraphImage() {
   const dataUri = (bytes: Buffer) => `data:image/png;base64,${bytes.toString("base64")}`;
   const [sticker, breadPng, cameraPng, albumPng, font] = await Promise.all([
     readFile(path.join(process.cwd(), "src/assets/og-sticker.png")),
-    readFile(path.join(process.cwd(), "public/art/bread-1.png")),
+    readFile(path.join(process.cwd(), "public/art/bread-10.png")),
     readFile(path.join(process.cwd(), "public/art/camera.png")),
     readFile(path.join(process.cwd(), "public/art/album.png")),
     loadFont(),

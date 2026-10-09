@@ -138,9 +138,6 @@ export default function CreatePage() {
           </p>
           <div className="actions" style={{ marginTop: 0 }}>
             <DownloadButton sticker={done} />
-            <Link className="btn btn-ghost" href="/draw">
-              Go draw
-            </Link>
             <Link className="btn btn-ghost" href="/">
               Home
             </Link>
