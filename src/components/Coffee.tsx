@@ -61,15 +61,8 @@ export function Coffee({ url }: { url: string }) {
       aria-label="Buy me a coffee"
       style={{ left: spot.left, top: spot.top, width: SIZE, height: SIZE }}
     >
-      <svg viewBox="0 0 100 100" aria-hidden>
-        <path d="M38 12 q-8 8 0 16 q8 8 0 16" fill="none" stroke="#bfe3ff" strokeWidth="6" strokeLinecap="round" />
-        <path d="M56 12 q-8 8 0 16 q8 8 0 16" fill="none" stroke="#bfe3ff" strokeWidth="6" strokeLinecap="round" />
-        <path d="M70 56 h8 a12 12 0 0 1 0 24 h-10" fill="none" stroke="#86c3f2" strokeWidth="8" strokeLinecap="round" />
-        <path d="M18 50 h58 v20 a22 22 0 0 1 -22 22 h-14 a22 22 0 0 1 -22 -22 z" fill="#9fd2f7" />
-        <ellipse cx="47" cy="50" rx="29" ry="7" fill="#86c3f2" />
-        <ellipse cx="47" cy="50" rx="23" ry="4.5" fill="#b98a64" />
-        <path d="M28 64 q0 14 10 20" fill="none" stroke="#cfe9ff" strokeWidth="5" strokeLinecap="round" />
-      </svg>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/art/coffee.png" alt="" draggable={false} />
     </a>
   );
 }

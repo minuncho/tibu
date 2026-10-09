@@ -1,11 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ImageResponse } from "next/og";
-import {
-  AlbumArtFlat as AlbumArt,
-  CameraArtFlat as CameraArt,
-  GachaArtFlat as GachaArt,
-} from "@/components/Art";
 
 export const alt = "Tibu: turn your pet into a sticker and collect pets from around the world";
 export const size = { width: 1200, height: 630 };
@@ -27,11 +22,16 @@ async function loadFont() {
 
 // Picture shown when the link is shared: the name on the left, the four home items on the right.
 export default async function OpenGraphImage() {
-  const [sticker, font] = await Promise.all([
+  // Each path is spelled out so the bundler can see exactly which files are read.
+  const dataUri = (bytes: Buffer) => `data:image/png;base64,${bytes.toString("base64")}`;
+  const [sticker, gachaPng, cameraPng, albumPng, font] = await Promise.all([
     readFile(path.join(process.cwd(), "src/assets/og-sticker.png")),
+    readFile(path.join(process.cwd(), "public/art/gacha.png")),
+    readFile(path.join(process.cwd(), "public/art/camera.png")),
+    readFile(path.join(process.cwd(), "public/art/album.png")),
     loadFont(),
   ]);
-  const stickerSrc = `data:image/png;base64,${sticker.toString("base64")}`;
+  const [stickerSrc, gacha, camera, album] = [sticker, gachaPng, cameraPng, albumPng].map(dataUri);
   const cell = {
     width: ITEM,
     height: ITEM,
@@ -66,13 +66,13 @@ export default async function OpenGraphImage() {
 
         <div style={{ width: ITEM * 2 + 20, display: "flex", flexWrap: "wrap", gap: 20 }}>
           <div style={cell}>
-            <GachaArt size={200} />
+            <img src={gacha} width={210} height={210} alt="" />
           </div>
           <div style={cell}>
-            <CameraArt size={200} />
+            <img src={camera} width={210} height={210} alt="" />
           </div>
           <div style={cell}>
-            <AlbumArt size={200} />
+            <img src={album} width={210} height={210} alt="" />
           </div>
           <div style={cell}>
             {/* eslint-disable-next-line @next/next/no-img-element */}

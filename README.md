@@ -29,7 +29,7 @@ Each sticker gets a permanent serial number, starting from `0000`.
 - [Next.js](https://nextjs.org) (App Router, TypeScript), deployed on [Vercel](https://vercel.com)
 - [Supabase](https://supabase.com) for Google sign-in, Postgres and image storage
 - [OpenAI](https://platform.openai.com) image model for the photo-to-sticker conversion
-- Mobile-only layout, English-only interface, no UI framework (plain CSS and inline SVG art)
+- Mobile-only layout, English-only interface, no UI framework (plain CSS; the 3D-look illustrations are generated images)
 
 ## Run it locally
 
@@ -64,10 +64,11 @@ Set the same variables in Vercel. `vercel.json` pins server functions to Sydney 
 
 ```
 src/app            pages (/, /create, /draw, /album, /staff, /terms, /privacy) and API routes
-src/components     sticker card, crop tool, illustrations, shared UI
+src/components     sticker card, crop tool, shared UI
 src/lib            shared types, sticker image rendering, client helpers
 src/lib/server     auth, daily limits, reports, OpenAI call, data stores
 supabase           database schema
+public/art         home screen illustrations
 public/seed        sample pets used in demo mode
 public/flags       country flags (from flag-icons, MIT)
 ```

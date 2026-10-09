@@ -27,11 +27,11 @@ type Db = {
 };
 
 const SEEDS: [string, string, StickerStyle, string, string][] = [
-  ["Mochi", "I only knocked over ONE cup today.", "2d", "/seed/cat.svg", "JP"],
-  ["Bori", "Walk? Did somebody say walk?!", "2d", "/seed/dog.svg", "KR"],
-  ["Tofu", "Carrots are a love language.", "2d", "/seed/rabbit.svg", "FR"],
-  ["Kong", "Zzz... five more sunflower seeds...", "2d", "/seed/hamster.svg", "US"],
-  ["Pico", "Good morning! Good morning! Good morning!", "2d", "/seed/bird.svg", "BR"],
+  ["Mochi", "I only knocked over ONE cup today.", "2d", "/seed/cat.png", "JP"],
+  ["Bori", "Walk? Did somebody say walk?!", "2d", "/seed/dog.png", "KR"],
+  ["Tofu", "Carrots are a love language.", "2d", "/seed/rabbit.png", "FR"],
+  ["Kong", "Zzz... five more sunflower seeds...", "2d", "/seed/hamster.png", "US"],
+  ["Pico", "Good morning! Good morning! Good morning!", "2d", "/seed/bird.png", "BR"],
 ];
 
 function load(): Db {
