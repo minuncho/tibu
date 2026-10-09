@@ -253,7 +253,6 @@ button {
 .shelf-items {
   display: flex;
   align-items: flex-end;
-  padding: 0 10px;
 }
 
 .shelves .art {
@@ -286,12 +285,12 @@ button {
 /* Up to three of today's breads and the stickers that came out of them. */
 .shelf-row {
   justify-content: center;
-  gap: 8px;
+  gap: 2.75%;
   min-height: 88px;
 }
 
 .slot {
-  flex: 0 0 27%;
+  flex: 0 0 31.5%;
 }
 
 .slot-sticker {

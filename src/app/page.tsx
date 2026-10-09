@@ -58,31 +58,53 @@ export default function HomePage() {
     Boolean(SUPPORT_URL && state) &&
     (SUPPORT_COUNTRIES.length === 0 || SUPPORT_COUNTRIES.includes(state?.country ?? ""));
 
-  // One bagged bread per draw left today. An opened one leaves its sticker in the
-  // same spot. slotOf[i] is the shelf position of the i-th sticker drawn today.
+  // The home row has three fixed spots. A spot holds a bagged bread while there are draws
+  // left for it; opening one puts the drawn sticker in that same spot.
   const drawn = state?.drawnToday ?? [];
   const breadsLeft = !state ? 0 : state.unlimited ? STAFF_BREADS : state.drawsLeft;
-  const [slotOf, setSlotOf] = useState<number[]>([]);
   const [opening, setOpening] = useState<number | null>(null);
-  // which of the bread pictures sits at each shelf position
-  // The bread pictures in a random order, repeated, so neighbors never match.
+  // The bread pictures in a random order, so neighbors never match.
   const [looks] = useState(() =>
     Array.from({ length: BREADS }, (_, i) => i + 1).sort(() => Math.random() - 0.5),
   );
-  // After a reload (or anything else that changes today's draws) stickers simply come first.
-  const positions = slotOf.length === drawn.length ? slotOf : drawn.map((_, i) => i);
-  const slots = Array.from({ length: drawn.length + breadsLeft }, (_, slot) => {
-    const i = positions.indexOf(slot);
-    return i >= 0 ? drawn[i] : null;
-  });
-  // Only three fit on the screen: the breads still to open first, then the newest stickers.
-  const breadSlots = slots.flatMap((s, slot) => (s ? [] : [slot]));
-  const newestStickers = positions.slice().reverse();
-  const visible = [...breadSlots, ...newestStickers].slice(0, SHOWN).sort((a, b) => a - b);
+  // spotOf[i] is the spot the i-th sticker drawn today came out of. Remembered on this
+  // device for the day; stickers drawn elsewhere fill the spots from the left.
+  const spotsKey = state ? `spots:${state.date}` : "";
+  const [saved, setSaved] = useState<number[]>([]);
+  useEffect(() => {
+    if (!spotsKey) return;
+    try {
+      const value = JSON.parse(localStorage.getItem(spotsKey) || "[]");
+      if (Array.isArray(value)) setSaved(value.filter((n) => Number.isInteger(n)));
+    } catch {}
+  }, [spotsKey]);
+  const spotOf = drawn.map((_, i) => (saved[i] >= 0 && saved[i] < SHOWN ? saved[i] : i % SHOWN));
+  // How many stickers stay on the row: the spots no bread is waiting for. Staff never run
+  // out of breads, so they keep just their newest one.
+  const keep = Math.min(drawn.length, state?.unlimited ? 1 : SHOWN - Math.min(SHOWN, breadsLeft));
+  const spots: (Sticker | "bread" | null)[] = Array(SHOWN).fill(null);
+  let kept = 0;
+  for (let i = drawn.length - 1; i >= 0 && kept < keep; i--) {
+    if (spots[spotOf[i]] === null) {
+      spots[spotOf[i]] = drawn[i];
+      kept++;
+    }
+  }
+  let breads = Math.min(SHOWN, breadsLeft);
+  for (let spot = 0; spot < SHOWN && breads > 0; spot++) {
+    if (spots[spot] === null) {
+      spots[spot] = "bread";
+      breads--;
+    }
+  }
+  const firstBread = spots.indexOf("bread");
+  // A spot gets a different bread picture each time a new one lands there.
+  const look = (spot: number) =>
+    looks[(spot + SHOWN * spotOf.filter((s) => s === spot).length) % looks.length];
 
-  async function openBread(slot: number) {
+  async function openBread(spot: number) {
     if (opening !== null) return;
-    setOpening(slot);
+    setOpening(spot);
     try {
       const [{ sticker }] = await Promise.all([
         api<{ sticker: Sticker | null }>("/api/draw", { method: "POST" }),
@@ -93,9 +115,12 @@ export default function HomePage() {
         return;
       }
       await preload(sticker.thumbUrl || sticker.imageUrl);
-      const before = positions;
+      const next = [...spotOf, spot];
+      try {
+        localStorage.setItem(spotsKey, JSON.stringify(next));
+      } catch {}
       await refresh();
-      setSlotOf([...before, slot]);
+      setSaved(next);
       setShown({ sticker, drawn: true });
     } catch (e) {
       showToast(e instanceof Error ? e.message : "Something went wrong");
@@ -195,31 +220,32 @@ export default function HomePage() {
       <div className="shelves">
         <section className="shelf">
           <div className="shelf-items shelf-row">
-            {visible.map((slot) => {
-              const sticker = slots[slot];
-              return sticker ? (
+            {spots.map((item, spot) =>
+              item === null ? (
+                <span key={spot} className="slot" />
+              ) : item === "bread" ? (
                 <button
-                  key={slot}
-                  className="slot slot-sticker"
-                  aria-label={`Sticker ${sticker.name}`}
-                  onClick={() => setShown({ sticker, drawn: true })}
+                  key={spot}
+                  className="slot"
+                  aria-label="Open a snack"
+                  data-spin={opening === spot}
+                  onClick={() => openBread(spot)}
                 >
-                  <StickerCard sticker={sticker} />
+                  {hints && spot === firstBread && <span className="hint">Open one</span>}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img className="art" src={`/art/bread-${look(spot)}.png`} alt="" draggable={false} />
                 </button>
               ) : (
                 <button
-                  key={slot}
-                  className="slot"
-                  aria-label="Open a snack"
-                  data-spin={opening === slot}
-                  onClick={() => openBread(slot)}
+                  key={spot}
+                  className="slot slot-sticker"
+                  aria-label={`Sticker ${item.name}`}
+                  onClick={() => setShown({ sticker: item, drawn: true })}
                 >
-                  {hints && slot === breadSlots[0] && <span className="hint">Open one</span>}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img className="art" src={`/art/bread-${looks[slot % looks.length]}.png`} alt="" draggable={false} />
+                  <StickerCard sticker={item} />
                 </button>
-              );
-            })}
+              ),
+            )}
             {state && breadsLeft === 0 && (
               <p className="shelf-note">Make a sticker to get another snack</p>
             )}
