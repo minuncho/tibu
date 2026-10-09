@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import type { StickerStyle } from "../types";
 import { OPENAI_API_KEY, OPENAI_IMAGE_MODEL } from "./env";
 import { PublicError } from "./http";
@@ -25,42 +27,51 @@ const PROMPTS: Record<StickerStyle, string> = {
     "shadow, text or border.",
   // Drawn styles: as simple and gentle as possible. Detailed fur and large eyes read as creepy.
   "3d":
-    "Turn this pet into a cute, very simple vinyl toy figure, as a clean 3D render. " +
-    "Simplify as far as possible: soft rounded blob-like shapes, a big round head, a small body, short stubby legs and almost no detail. " +
-    "Every surface is completely smooth, like soft matte vinyl: no fur texture, no hair strands, no fluff. " +
+    "Turn this pet into a cute, very simple toy figure, as a clean 3D render. " +
+    "It is made of smooth glossy vinyl, polished like glazed ceramic, with soft reflections and no texture at all: no fur, no hair strands, no fluff. " +
+    "Simplify as far as possible: rounded balloon-like shapes, a big round head, a small body, short stubby legs and almost no detail. " +
     "Reduce the markings to a few large simple patches, with no fine stripes or speckles. " +
-    "The face must look gentle and friendly: two small solid black dot eyes set wide apart, a tiny nose and a tiny smile. " +
-    "No large or shiny eyes, no pupils or irises, no whiskers, no eyelashes, no teeth. " +
-    "Soft pastel-leaning versions of the pet's own colors, soft even studio lighting. " +
+    "The face must look gentle and friendly: two round solid black bead eyes with one small white highlight each, set wide apart, a small rounded nose and a tiny mouth. " +
+    "No pupils or irises, no whiskers, no eyelashes, no teeth. " +
+    "Use the pet's own colors, clean and bright, with soft even studio lighting. " +
     COMMON,
   "2d":
-    "Redraw this pet as a cute, extremely simple flat mascot. " +
-    "Soft rounded blob-like shapes with a big round head and almost no detail: no fur tufts, spikes or stray hairs. " +
+    "Redraw this pet as a cute, extremely simple flat sticker illustration. " +
+    "Soft rounded shapes with a big round head and almost no detail; a few soft rounded tufts may suggest fluff, but no thin strands or spikes. " +
     "At most three or four flat pastel colors, with the markings reduced to a few large simple patches and no fine stripes. " +
     "No outlines, no gradients, no shading, no highlights. " +
-    "The face must look gentle and friendly: two small solid black dot eyes set wide apart, a tiny nose and two pink cheek ovals. " +
+    "The face must look gentle and friendly: two small solid black dot eyes set wide apart, a tiny nose with a tiny mouth, and two soft pink cheek circles. " +
     "No large eyes, no pupils or irises, no whiskers. " +
     "Use pastel versions of the pet's own colors. " +
     COMMON,
 };
 
+// The drawn styles also get a picture of the look we are after (src/assets/style-*.png, chosen
+// by the owner). It pins down the finish and the face far better than words alone.
+const STYLE_LEAD =
+  "The first image is the pet to draw. The second image is a style reference only: match its level of " +
+  "simplification, its material and finish and the way its face is drawn, but do not copy its animal, " +
+  "colors, markings or pose. ";
+
 // Returns a transparent PNG of the pet in the given style.
 export async function stylizePet(photo: Blob, style: StickerStyle): Promise<Buffer> {
-  // The first-generation models can be told to stay close to the input; later ones reject the setting.
-  const faithful = style === "real" && /^gpt-image-1/.test(OPENAI_IMAGE_MODEL);
-  return requestImage(photo, style, faithful ? { input_fidelity: "high" } : {});
-}
-
-async function requestImage(photo: Blob, style: StickerStyle, extra: Record<string, string>) {
+  const reference = await styleReference(style);
   const form = new FormData();
   form.set("model", OPENAI_IMAGE_MODEL);
-  form.set("image", photo, "pet.jpg");
-  form.set("prompt", PROMPTS[style]);
+  if (reference) {
+    form.append("image[]", photo, "pet.jpg");
+    form.append("image[]", reference, "style.png");
+    form.set("prompt", STYLE_LEAD + PROMPTS[style]);
+  } else {
+    form.set("image", photo, "pet.jpg");
+    form.set("prompt", PROMPTS[style]);
+  }
   form.set("background", "transparent");
   form.set("output_format", "png");
   form.set("size", "1024x1024");
   form.set("quality", "medium");
-  for (const [name, value] of Object.entries(extra)) form.set(name, value);
+  // The first-generation models can be told to stay close to the input; later ones reject the setting.
+  if (style === "real" && /^gpt-image-1/.test(OPENAI_IMAGE_MODEL)) form.set("input_fidelity", "high");
 
   const res = await fetch("https://api.openai.com/v1/images/edits", {
     method: "POST",
@@ -75,3 +86,21 @@ async function requestImage(photo: Blob, style: StickerStyle, extra: Record<stri
   }
   return Buffer.from(b64, "base64");
 }
+
+// Each path is spelled out so the bundler ships the file with the server code.
+// A missing file only costs the reference: the style then relies on its wording.
+async function styleReference(style: StickerStyle): Promise<Blob | null> {
+  try {
+    if (style === "3d") {
+      return new Blob([await readFile(path.join(process.cwd(), "src/assets/style-3d.png"))], PNG);
+    }
+    if (style === "2d") {
+      return new Blob([await readFile(path.join(process.cwd(), "src/assets/style-2d.png"))], PNG);
+    }
+  } catch (e) {
+    console.error("style reference missing", e);
+  }
+  return null;
+}
+
+const PNG = { type: "image/png" };
