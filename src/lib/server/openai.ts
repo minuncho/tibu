@@ -26,14 +26,15 @@ const PROMPTS: Record<StickerStyle, string> = {
     "Output only the unchanged pet on a fully transparent background, with clean edges and no outline, " +
     "shadow, text or border.",
   // Drawn styles: as simple and gentle as possible. Detailed fur and large eyes read as creepy.
+  // A toy-store figure, not a fluffy render and not a glossy balloon (both were rejected).
   "3d":
-    "Turn this pet into a cute, very simple toy figure, as a clean 3D render. " +
-    "It is made of smooth glossy vinyl, polished like glazed ceramic, with soft reflections and no texture at all: no fur, no hair strands, no fluff. " +
-    "Simplify as far as possible: rounded balloon-like shapes, a big round head, a small body, short stubby legs and almost no detail. " +
-    "Reduce the markings to a few large simple patches, with no fine stripes or speckles. " +
-    "The face must look gentle and friendly: two round solid black bead eyes with one small white highlight each, set wide apart, a small rounded nose and a tiny mouth. " +
-    "No pupils or irises, no whiskers, no eyelashes, no teeth. " +
-    "Use the pet's own colors, clean and bright, with soft even studio lighting. " +
+    "Turn this pet into a soft vinyl toy figure (sofubi), shown as a studio product photo of the real toy. " +
+    "A cartoon mascot version of this pet with very simple, rounded, chunky sculpted shapes, a large head and short limbs. " +
+    "Smooth matte vinyl in flat solid colors with gentle soft shading only: no fur texture, no hair strands, no gloss. " +
+    "Markings are simple painted patches with clean edges. " +
+    "Painted cartoon eyes: dark ovals with one small white highlight; a small nose; a small happy mouth. " +
+    "No whiskers, no eyelashes. " +
+    "Clean bright colors taken from the pet. " +
     COMMON,
   "2d":
     "Redraw this pet as a cute, extremely simple flat sticker illustration. " +
@@ -46,8 +47,8 @@ const PROMPTS: Record<StickerStyle, string> = {
     COMMON,
 };
 
-// The drawn styles also get a picture of the look we are after (src/assets/style-*.png, chosen
-// by the owner). It pins down the finish and the face far better than words alone.
+// The 2D style also gets a picture of the look we are after (src/assets/style-2d.png, chosen by
+// the owner). It pins down the finish and the face far better than words alone.
 const STYLE_LEAD =
   "The first image is the pet to draw. The second image is a style reference only: match its level of " +
   "simplification, its material and finish and the way its face is drawn, but do not copy its animal, " +
@@ -91,9 +92,6 @@ export async function stylizePet(photo: Blob, style: StickerStyle): Promise<Buff
 // A missing file only costs the reference: the style then relies on its wording.
 async function styleReference(style: StickerStyle): Promise<Blob | null> {
   try {
-    if (style === "3d") {
-      return new Blob([await readFile(path.join(process.cwd(), "src/assets/style-3d.png"))], PNG);
-    }
     if (style === "2d") {
       return new Blob([await readFile(path.join(process.cwd(), "src/assets/style-2d.png"))], PNG);
     }
