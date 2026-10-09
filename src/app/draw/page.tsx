@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { GachaArt, Pips } from "@/components/Art";
+import { DonutArt, Pips } from "@/components/Art";
 import { ReportButton } from "@/components/Report";
 import { DownloadButton, StickerView } from "@/components/StickerDetail";
 import { TopBar } from "@/components/TopBar";
@@ -84,21 +84,21 @@ export default function DrawPage() {
       <div className="card stack">
         <button
           className="machine"
-          aria-label="Turn the handle"
+          aria-label="Open the bag"
           data-spin={spinning}
           disabled={spinning || left === 0}
           onClick={draw}
         >
-          <GachaArt />
+          <DonutArt />
         </button>
         {state && !state.unlimited && <Pips count={left} max={BASE_DRAWS_PER_DAY} />}
         <p className="note">
           {spinning
-            ? "Rattle rattle..."
+            ? "Rustle rustle..."
             : !state
               ? "Checking your draws..."
               : left > 0
-                ? "Tap the machine to draw"
+                ? "Tap the bag to open it"
                 : "No draws left today. Make a sticker to earn one!"}
         </p>
         {message && <p className="error">{message}</p>}

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AlbumArt, CameraArt, EmptyStickerArt, GachaArt } from "@/components/Art";
+import { AlbumArt, CameraArt, EmptyStickerArt, DonutArt } from "@/components/Art";
 import { Coffee } from "@/components/Coffee";
 import { RemovalNotice } from "@/components/RemovalNotice";
 import { StickerCard } from "@/components/Sticker";
@@ -150,7 +150,7 @@ export default function HomePage() {
           }
         >
           {hints && <span className="hint">Draw a pet</span>}
-          <GachaArt />
+          <DonutArt />
         </button>
 
         <button

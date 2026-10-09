@@ -4,12 +4,12 @@ Turn a photo of your pet into a collectible sticker, then draw stickers of other
 
 **Try it: https://tibu-sand.vercel.app**
 
-[![tibu: the name on the left; a gacha machine, a camera, an album and a pet sticker on the right](docs/preview.png)](https://tibu-sand.vercel.app)
+[![tibu: the name on the left; a bagged donut, a camera, an album and a pet sticker on the right](docs/preview.png)](https://tibu-sand.vercel.app)
 
 ## How it works
 
 1. **Make** – upload a pet photo, crop it to a square, and an AI model redraws it in three styles (Realistic, 3D, 2D). Pick one, give it a name, a country flag and a short speech bubble.
-2. **Draw** – turn the gacha machine to get a random sticker made by someone else. Every sticker has the same chance. The speech bubble is a message from the pet's owner to whoever draws it.
+2. **Draw** – open a bagged donut to get a random sticker made by someone else. Every sticker has the same chance. The speech bubble is a message from the pet's owner to whoever draws it.
 3. **Collect** – everything you make or draw is kept in your album, and any sticker can be saved as an image.
 
 Each sticker gets a permanent serial number, starting from `0000`.

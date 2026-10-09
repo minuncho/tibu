@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { GachaArt } from "@/components/Art";
+import { DonutArt } from "@/components/Art";
 import { api } from "@/lib/api";
 import { supabaseBrowser } from "@/lib/supabase-browser";
 import type { AppState } from "@/lib/types";
@@ -39,7 +39,7 @@ export default function LoginPage() {
   return (
     <main className="login">
       <h1>tibu</h1>
-      <GachaArt />
+      <DonutArt />
       <div className="stack" style={{ width: "100%" }}>
         <button className="btn btn-google" disabled={!mode} onClick={signIn}>
           {mode === "demo" ? (
