@@ -2,9 +2,12 @@ import type { StickerStyle } from "../types";
 import { OPENAI_API_KEY, OPENAI_IMAGE_MODEL } from "./env";
 import { PublicError } from "./http";
 
-// Shared by all three styles.
+// Wording tuned on gpt-image-2.5-sunburst (2026-10-09). That model adds fur detail and
+// large shaded eyes unless told plainly not to, hence the many "no ..." clauses.
+
+// Shared by the two drawn styles.
 const COMMON =
-  "Keep the same animal with its exact fur colors, markings and face so the owner recognizes their pet. " +
+  "Keep the same animal so the owner recognizes their pet: the same colors and the same markings in the same places. " +
   "Show the whole pet, centered, with a little margin. " +
   "Fully transparent background. No text, no border, no frame, no ground shadow, no props.";
 
@@ -19,30 +22,28 @@ const PROMPTS: Record<StickerStyle, string> = {
     "Output only the unchanged pet on a fully transparent background, with clean edges and no outline, " +
     "shadow, text or border.",
   "3d":
-    "Redraw this pet as a clean 3D video-game creature model render: smooth glossy surfaces with no fur " +
-    "texture, simple rounded shapes, bright solid colors, soft even shading, simple round eyes, " +
-    "three-quarter view. " +
+    "Turn this pet into a collectible vinyl toy figure, as a clean 3D render. " +
+    "Simplify it heavily: a smooth, inflated, balloon-like body with a big round head and short chunky legs. " +
+    "No fur strands, no hair texture and no fluff anywhere: every surface is smooth molded vinyl with a soft gloss. " +
+    "Use only the pet's two or three main colors, as large clean patches where its markings are. " +
+    "Plain solid black bead eyes, a small rounded nose, no whiskers, no eyelashes, no teeth. " +
+    "Three-quarter view, soft even studio lighting. " +
     COMMON,
   "2d":
-    "Redraw this pet as a minimal flat vector sticker: no outlines at all, only soft pastel color shapes, " +
-    "very simple rounded forms, front-facing and symmetric, standing upright with a big round head and a " +
-    "small round body, two small dark oval eyes, a tiny nose, pink cheek ovals, no mouth detail, " +
-    "no shading, no gradients, no texture. Use pastel versions of the pet's own colors. " +
+    "Redraw this pet as a very simple flat mascot icon. " +
+    "One smooth rounded silhouette with no fur tufts, spikes or stray hairs. " +
+    "Three or four flat pastel colors as large simple shapes, with no outlines, no gradients, no shading and no highlights. " +
+    "Front-facing and symmetric, standing upright, with a big round head, a small round body and short stubby legs. " +
+    "Face: two small solid dark oval eyes, a tiny nose and two pink cheek ovals, nothing else. " +
+    "Use pastel versions of the pet's own colors. " +
     COMMON,
 };
 
 // Returns a transparent PNG of the pet in the given style.
 export async function stylizePet(photo: Blob, style: StickerStyle): Promise<Buffer> {
-  // For Realistic, ask the model to stay as close to the photo as it can. Not every model
-  // has this setting, so a refusal of it is retried without.
-  if (style === "real") {
-    try {
-      return await requestImage(photo, style, { input_fidelity: "high" });
-    } catch (e) {
-      if (!(e instanceof PublicError && /input_fidelity/.test(e.message))) throw e;
-    }
-  }
-  return requestImage(photo, style, {});
+  // The first-generation models can be told to stay close to the input; later ones reject the setting.
+  const faithful = style === "real" && /^gpt-image-1/.test(OPENAI_IMAGE_MODEL);
+  return requestImage(photo, style, faithful ? { input_fidelity: "high" } : {});
 }
 
 async function requestImage(photo: Blob, style: StickerStyle, extra: Record<string, string>) {
