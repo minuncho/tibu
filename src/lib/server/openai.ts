@@ -1,11 +1,9 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import type { StickerStyle } from "../types";
 import { OPENAI_API_KEY, OPENAI_IMAGE_MODEL } from "./env";
 import { PublicError } from "./http";
 
-// Wording tuned on gpt-image-2.5-sunburst (2026-10-09). That model adds fur detail and
-// large shaded eyes unless told plainly not to, hence the many "no ..." clauses.
+// Wording tuned on gpt-image-2.5-sunburst. That model adds fur detail and elaborate eyes
+// unless told plainly not to, hence the many "no ..." clauses.
 
 // Shared by the two drawn styles.
 const COMMON =
@@ -25,48 +23,36 @@ const PROMPTS: Record<StickerStyle, string> = {
     "cut off by the edge of the photo. Do not add or complete anything. " +
     "Output only the unchanged pet on a fully transparent background, with clean edges and no outline, " +
     "shadow, text or border.",
-  // Drawn styles: as simple and gentle as possible. Detailed fur and large eyes read as creepy.
-  // A toy-store figure, not a fluffy render and not a glossy balloon (both were rejected).
+  // 3D: a smooth toy-store figure. Sculpted fur and glossy balloon toys were both rejected.
   "3d":
-    "Turn this pet into a soft vinyl toy figure (sofubi), shown as a studio product photo of the real toy. " +
-    "A cartoon mascot version of this pet with very simple, rounded, chunky sculpted shapes, a large head and short limbs. " +
-    "Smooth matte vinyl in flat solid colors with gentle soft shading only: no fur texture, no hair strands, no gloss. " +
-    "Markings are simple painted patches with clean edges. " +
+    "Turn this pet into a soft vinyl toy figure, shown as a studio product photo of the real toy. " +
+    "A cartoon mascot version of this pet with very simple, rounded, chunky shapes, a large head and short limbs. " +
+    "The whole surface is perfectly smooth molded plastic: fur is not sculpted at all, so there are no tufts, clumps, ridges, grooves or hair lines anywhere, and the ears, head, body and tail are plain smooth rounded forms. " +
+    "Smooth matte vinyl in flat solid colors with gentle soft shading only, no gloss. " +
+    "Simplify the coat pattern drastically: replace stripes, spots and speckles with at most three or four large plain patches of color with clean edges. " +
     "Painted cartoon eyes: dark ovals with one small white highlight; a small nose; a small happy mouth. " +
     "No whiskers, no eyelashes. " +
     "Clean bright colors taken from the pet. " +
     COMMON,
+  // 2D: outlined anime art like the stickers that come in snack bread. A flat, lineless
+  // version did not read as "2D" to the owner.
   "2d":
-    "Redraw this pet as a cute, extremely simple flat sticker illustration. " +
-    "Soft rounded shapes with a big round head and almost no detail; a few soft rounded tufts may suggest fluff, but no thin strands or spikes. " +
-    "At most three or four flat pastel colors, with the markings reduced to a few large simple patches and no fine stripes. " +
-    "No outlines, no gradients, no shading, no highlights. " +
-    "The face must look gentle and friendly: two small solid black dot eyes set wide apart, a tiny nose with a tiny mouth, and two soft pink cheek circles. " +
-    "No large eyes, no pupils or irises, no whiskers. " +
-    "Use pastel versions of the pet's own colors. " +
+    "Redraw this pet as 2D anime character art, in the style of official artwork for a classic monster-collecting video game as printed on collectible bread stickers. " +
+    "Clean, even, thin dark outlines around every shape. " +
+    "The outline is a smooth, simple contour drawn with very few lines: no fur tufts, zigzags, spikes or individual hairs, either on the outline or inside it. " +
+    "Flat solid colors with no gradients; at most one slightly darker flat tone for shadow. " +
+    "A very simplified cartoon design made of simple rounded shapes, with the coat pattern reduced to at most three or four flat patches instead of stripes or speckles. " +
+    "Simple cartoon eyes: solid dark ovals with one white highlight; a tiny nose; a small happy mouth. " +
+    "No whiskers, no eyelashes, no realistic detail, no 3D shading. " +
     COMMON,
 };
 
-// The 2D style also gets a picture of the look we are after (src/assets/style-2d.png, chosen by
-// the owner). It pins down the finish and the face far better than words alone.
-const STYLE_LEAD =
-  "The first image is the pet to draw. The second image is a style reference only: match its level of " +
-  "simplification, its material and finish and the way its face is drawn, but do not copy its animal, " +
-  "colors, markings or pose. ";
-
 // Returns a transparent PNG of the pet in the given style.
 export async function stylizePet(photo: Blob, style: StickerStyle): Promise<Buffer> {
-  const reference = await styleReference(style);
   const form = new FormData();
   form.set("model", OPENAI_IMAGE_MODEL);
-  if (reference) {
-    form.append("image[]", photo, "pet.jpg");
-    form.append("image[]", reference, "style.png");
-    form.set("prompt", STYLE_LEAD + PROMPTS[style]);
-  } else {
-    form.set("image", photo, "pet.jpg");
-    form.set("prompt", PROMPTS[style]);
-  }
+  form.set("image", photo, "pet.jpg");
+  form.set("prompt", PROMPTS[style]);
   form.set("background", "transparent");
   form.set("output_format", "png");
   form.set("size", "1024x1024");
@@ -87,18 +73,3 @@ export async function stylizePet(photo: Blob, style: StickerStyle): Promise<Buff
   }
   return Buffer.from(b64, "base64");
 }
-
-// Each path is spelled out so the bundler ships the file with the server code.
-// A missing file only costs the reference: the style then relies on its wording.
-async function styleReference(style: StickerStyle): Promise<Blob | null> {
-  try {
-    if (style === "2d") {
-      return new Blob([await readFile(path.join(process.cwd(), "src/assets/style-2d.png"))], PNG);
-    }
-  } catch (e) {
-    console.error("style reference missing", e);
-  }
-  return null;
-}
-
-const PNG = { type: "image/png" };
