@@ -13,6 +13,14 @@ const COMMON =
   "Fully transparent background. " +
   "No text, no border, no frame, no ground shadow, no props.";
 
+// What the owner cares about most in the drawn styles: fur is never depicted, the outline
+// is smooth even for a fluffy pet, and colors and coat pattern are simplified.
+const NO_FUR =
+  "Most important: do not depict fur. " +
+  "No individual hairs, strands, tufts, spikes, fringes or fur texture anywhere, not even on a very fluffy pet. " +
+  "A fluffy coat becomes a few big, smooth, rounded volumes, like a balloon or a marshmallow, and the silhouette is one smooth rounded contour. " +
+  "Simplify the colors to two or three flat colors, and simplify the coat pattern to at most three or four large plain patches instead of stripes, spots or speckles. ";
+
 const PROMPTS: Record<StickerStyle, string> = {
   // Realistic means the owner's actual photo with the background taken away, nothing else.
   // It does not share COMMON: "show the whole pet, centered" invites redrawing and reframing.
@@ -23,13 +31,12 @@ const PROMPTS: Record<StickerStyle, string> = {
     "cut off by the edge of the photo. Do not add or complete anything. " +
     "Output only the unchanged pet on a fully transparent background, with clean edges and no outline, " +
     "shadow, text or border.",
-  // 3D: a smooth toy-store figure. Sculpted fur and glossy balloon toys were both rejected.
+  // 3D: a smooth toy-store figure with a soft sheen and clear soft shadows.
   "3d":
-    "Turn this pet into a soft vinyl toy figure, shown as a studio product photo of the real toy. " +
+    "Turn this pet into a vinyl toy figure, shown as a studio product photo of the real toy. " +
     "A cartoon mascot version of this pet with very simple, rounded, chunky shapes, a large head and short limbs. " +
-    "The whole surface is perfectly smooth molded plastic: fur is not sculpted at all, so there are no tufts, clumps, ridges, grooves or hair lines anywhere, and the ears, head, body and tail are plain smooth rounded forms. " +
-    "Smooth matte vinyl in flat solid colors with gentle soft shading only, no gloss. " +
-    "Simplify the coat pattern drastically: replace stripes, spots and speckles with at most three or four large plain patches of color with clean edges. " +
+    NO_FUR +
+    "The surface is perfectly smooth molded vinyl with a soft satin sheen: gentle highlights on the rounded forms and clear soft shadows that show their volume. " +
     "Painted cartoon eyes: dark ovals with one small white highlight; a small nose; a small happy mouth. " +
     "No whiskers, no eyelashes. " +
     "Clean bright colors taken from the pet. " +
@@ -38,10 +45,10 @@ const PROMPTS: Record<StickerStyle, string> = {
   // version did not read as "2D" to the owner.
   "2d":
     "Redraw this pet as 2D anime character art, in the style of official artwork for a classic monster-collecting video game as printed on collectible bread stickers. " +
-    "Clean, even, thin dark outlines around every shape. " +
-    "The outline is a smooth, simple contour drawn with very few lines: no fur tufts, zigzags, spikes or individual hairs, either on the outline or inside it. " +
-    "Flat solid colors with no gradients; at most one slightly darker flat tone for shadow. " +
-    "A very simplified cartoon design made of simple rounded shapes, with the coat pattern reduced to at most three or four flat patches instead of stripes or speckles. " +
+    NO_FUR +
+    "Clean, even, thin dark outlines around every shape, drawn as long smooth curves with very few lines. " +
+    "The outline is never jagged, zigzag, scalloped, feathered or spiky: a fluffy pet is drawn as a smooth round ball-like shape, like a simple plush toy. " +
+    "Flat solid colors with no gradients; at most one slightly darker flat tone for shadow, in one or two large simple areas only. " +
     "Simple cartoon eyes: solid dark ovals with one white highlight; a tiny nose; a small happy mouth. " +
     "No whiskers, no eyelashes, no realistic detail, no 3D shading. " +
     COMMON,
