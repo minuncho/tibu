@@ -1,6 +1,7 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 import { isLive, STAFF_EMAILS, SUPABASE_ANON_KEY, SUPABASE_URL } from "./env";
+import { readTossSession } from "./toss";
 
 export type User = { id: string; name: string; email: string; avatarUrl: string | null };
 
@@ -31,6 +32,13 @@ export async function supabaseServer() {
 }
 
 export async function getUser(): Promise<User | null> {
+  // The Toss mini app has no cookies or Google account: it sends our own session token.
+  const bearer = (await headers()).get("authorization")?.match(/^Bearer (.+)$/)?.[1];
+  if (bearer) {
+    const id = readTossSession(bearer);
+    return id ? { id, name: "", email: "", avatarUrl: null } : null;
+  }
+
   if (!isLive) {
     const cookieStore = await cookies();
     return cookieStore.get(DEMO_COOKIE) ? DEMO_USER : null;

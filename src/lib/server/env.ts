@@ -19,6 +19,17 @@ export const STAFF_EMAILS = ["minunsyc@gmail.com"].concat(
 );
 export const OPENAI_IMAGE_MODEL = clean(process.env.OPENAI_IMAGE_MODEL) || "gpt-image-1";
 
+// Toss in-app version (tibu-toss). The certificate and key are PEM text from the Apps in Toss
+// console; hosting dashboards often store line breaks as a literal "\n", so both forms work.
+const pem = (value: string | undefined) => (value || "").replace(/\\n/g, "\n").trim();
+export const TOSS_MTLS_CERT = pem(process.env.TOSS_MTLS_CERT);
+export const TOSS_MTLS_KEY = pem(process.env.TOSS_MTLS_KEY);
+// Any long random string; signs the session tokens handed to the mini app.
+export const TOSS_SESSION_SECRET = clean(process.env.TOSS_SESSION_SECRET);
+// Local development only: accept the mock SDK's code without calling Toss.
+export const TOSS_DEV_ANON =
+  process.env.NODE_ENV !== "production" && process.env.TOSS_DEV_ANON === "1";
+
 // Without Supabase keys the app runs against a local JSON store with a fake user.
 export const isLive = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY && SUPABASE_SERVICE_ROLE_KEY);
 export const aiEnabled = Boolean(OPENAI_API_KEY);

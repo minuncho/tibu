@@ -106,6 +106,9 @@ export interface Store {
   pendingReportsForSticker(stickerId: string): Promise<ReportRow[]>;
   setReportStatus(ids: string[], status: ReportStatus): Promise<void>;
 
+  // Makes sure an account row exists for a user who signs in without Google (the Toss version).
+  ensureUser(userId: string): Promise<void>;
+
   // Erases the user and everything tied to them except the stickers they made:
   // those stay in the pool and in other people's albums, no longer linked to anyone.
   deleteAccount(userId: string): Promise<void>;

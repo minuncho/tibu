@@ -218,6 +218,9 @@ export const demoStore: Store = {
     save(db);
   },
 
+  // The demo store has no account table; any id works.
+  async ensureUser() {},
+
   async deleteAccount(userId) {
     const db = load();
     const kept = new Set(db.stickers.filter((s) => s.ownerId === userId).map((s) => s.imagePath));

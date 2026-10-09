@@ -302,6 +302,23 @@ export const supabaseStore: Store = {
     );
   },
 
+  async ensureUser(userId) {
+    const found = await db().auth.admin.getUserById(userId);
+    if (found.data.user) return;
+    // Rows in every table point at auth.users, so Toss users get a row there too.
+    // The address is a placeholder that can never receive mail or sign in.
+    const res = await db().auth.admin.createUser({
+      id: userId,
+      email: `${userId}@toss.tibu.invalid`,
+      email_confirm: true,
+      user_metadata: { toss: true },
+    });
+    // Two first requests at once: the other one created it.
+    if (res.error && !/already|exists|registered/i.test(res.error.message)) {
+      throw new Error(res.error.message);
+    }
+  },
+
   async deleteAccount(userId) {
     // Converted images that never became a sticker go; sticker images stay.
     const [generations, stickers] = await Promise.all([
