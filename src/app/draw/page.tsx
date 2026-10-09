@@ -12,6 +12,17 @@ import { BASE_DRAWS_PER_DAY, type Sticker } from "@/lib/types";
 
 const SPIN_MS = 1000;
 
+// Waits until the picture is in the browser's cache (or 3 seconds pass), so the sticker
+// is revealed complete instead of as an empty card that fills in a moment later.
+function preload(url: string) {
+  return new Promise<void>((resolve) => {
+    const img = new Image();
+    img.onload = img.onerror = () => resolve();
+    img.src = url;
+    setTimeout(resolve, 3000);
+  });
+}
+
 export default function DrawPage() {
   const { state, refresh } = useAppState();
   const [spinning, setSpinning] = useState(false);
@@ -28,7 +39,10 @@ export default function DrawPage() {
         api<{ sticker: Sticker | null }>("/api/draw", { method: "POST" }),
         new Promise((resolve) => setTimeout(resolve, SPIN_MS)),
       ]);
-      if (sticker) setResult(sticker);
+      if (sticker) {
+        await preload(sticker.thumbUrl || sticker.imageUrl);
+        setResult(sticker);
+      }
       else setMessage("No stickers from other owners yet. Your draw was not used.");
       // Not awaited: the sticker shows right away while the remaining count updates.
       refresh().catch(() => {});

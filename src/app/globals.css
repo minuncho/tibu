@@ -387,7 +387,9 @@ button {
   overflow: hidden;
 }
 
+/* Fades in so a picture that arrives late does not pop */
 .sticker-pet {
+  animation: fade 0.25s ease;
   position: absolute;
   left: 8cqw;
   top: 21cqw;
