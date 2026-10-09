@@ -76,6 +76,20 @@ export default function HomePage() {
     }
   }
 
+  // The theme lives on <html data-theme>; layout.tsx applies the saved one before first paint.
+  const [dark, setDark] = useState(false);
+  useEffect(() => setDark(document.documentElement.dataset.theme === "dark"), []);
+
+  function toggleDark() {
+    const next = !dark;
+    setDark(next);
+    if (next) document.documentElement.dataset.theme = "dark";
+    else delete document.documentElement.dataset.theme;
+    try {
+      localStorage.setItem("theme", next ? "dark" : "light");
+    } catch {}
+  }
+
   async function signOut() {
     await api("/api/auth/logout", { method: "POST" });
     clearAppState();
@@ -108,6 +122,7 @@ export default function HomePage() {
                 {state.user.isStaff && <Link href="/staff">Staff</Link>}
                 <Link href="/terms">Terms of Service</Link>
                 <Link href="/privacy">Privacy Policy</Link>
+                <button onClick={toggleDark}>{dark ? "Light mode" : "Dark mode"}</button>
                 <button onClick={signOut}>Sign out</button>
                 <button
                   className="danger"

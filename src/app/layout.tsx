@@ -33,12 +33,17 @@ export const viewport: Viewport = {
   themeColor: "#bfe3ff",
 };
 
+const THEME_SCRIPT =
+  'try{if(localStorage.getItem("theme")==="dark")document.documentElement.dataset.theme="dark"}catch(e){}';
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // translate="no": the app is English only, and browser auto-translation (Papago in the
     // Naver app, Chrome) mangles the short button labels (the "Home" button came out as a sentence).
-    <html lang="en" translate="no" className={`notranslate ${round.variable} ${korean.variable}`}>
+    <html lang="en" translate="no" suppressHydrationWarning className={`notranslate ${round.variable} ${korean.variable}`}>
       <body>
+        {/* Applies the saved theme before the first paint, so dark mode does not flash white. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
         <InAppBrowser />
         <div className="app">{children}</div>
       </body>

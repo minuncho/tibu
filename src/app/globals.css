@@ -10,6 +10,9 @@
   --ink-soft: #7ea6c6;
   --text: #24384a;
   --white: #fff;
+  --on-color: #fff;
+  --page: #f3f9fd;
+  --app: #fff;
   --danger: #e0527a;
   --radius: 24px;
 }
@@ -23,7 +26,7 @@ html,
 body {
   margin: 0;
   min-height: 100dvh;
-  background: #f3f9fd;
+  background: var(--page);
   color: var(--ink);
   font-family: var(--font-round), var(--font-kr), "Gulim", "Apple SD Gothic Neo", sans-serif;
   font-weight: 500;
@@ -50,7 +53,7 @@ button {
   padding: max(16px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
-  background: var(--white);
+  background: var(--app);
 }
 
 /* Bar shown inside chat-app browsers (KakaoTalk, Instagram, ...) */
@@ -123,7 +126,7 @@ button {
   border: 0;
   border-radius: 50%;
   background: var(--sky-deep);
-  color: var(--white);
+  color: var(--on-color);
   font-size: 17px;
   font-weight: 800;
   overflow: hidden;
@@ -239,7 +242,7 @@ button {
   border: 0;
   border-radius: 14px;
   background: var(--sky-deep);
-  color: var(--white);
+  color: var(--on-color);
   font-size: 13px;
   font-weight: 700;
 }
@@ -539,7 +542,7 @@ a.back {
   border: 0;
   border-radius: 26px;
   background: var(--action);
-  color: var(--white);
+  color: var(--on-color);
   font-size: 16px;
   font-weight: 700;
   display: inline-flex;
@@ -1035,7 +1038,7 @@ a.back {
   padding: 2px 8px;
   border-radius: 10px;
   background: var(--danger);
-  color: var(--white);
+  color: var(--on-color);
   font-size: 11px;
   font-weight: 700;
   transform: translateX(-50%);
@@ -1129,4 +1132,57 @@ a.back {
   75% {
     transform: rotate(4deg);
   }
+}
+
+/* Dark theme, switched from the profile menu (data-theme on <html>). Colors follow the Toss
+   app's dark mode: #17171c background, #202027 / #2c2c35 raised surfaces, grey text, blue accent. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #17171c;
+  --app: #17171c;
+  --white: #2c2c35;
+  --surface: #202027;
+  --line: #3c3c47;
+  --sky: #3c3c47;
+  --sky-deep: #4593fc;
+  --sky-pale: #202027;
+  --action: #3485fa;
+  --ink: #c3c3c6;
+  --ink-soft: #7e7e87;
+  --text: #e4e4e5;
+  --danger: #f04452;
+}
+
+/* A sticker is a white card in either theme, like the saved image. */
+:root[data-theme="dark"] .sticker {
+  --white: #fff;
+  --line: #d9eaf7;
+  --text: #24384a;
+  --ink: #3f729b;
+  --ink-soft: #7ea6c6;
+  --sky: #bfe3ff;
+  --sky-pale: #e3f3ff;
+  --sky-deep: #86c3f2;
+  --surface: #f2f9ff;
+}
+
+:root[data-theme="dark"] .btn:disabled {
+  background: #3c3c47;
+  color: #7e7e87;
+}
+
+:root[data-theme="dark"] .btn-google {
+  background: #fff;
+}
+
+:root[data-theme="dark"] .modal {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+:root[data-theme="dark"] .tag {
+  background: rgba(240, 68, 82, 0.16);
+}
+
+:root[data-theme="dark"] .profile-menu {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
 }
