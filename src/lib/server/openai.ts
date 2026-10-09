@@ -46,7 +46,8 @@ const PROMPTS: Record<StickerStyle, string> = {
   // balloon), bold saturated colors, and gloss only on top of the head.
   "3d":
     "Turn this pet into a solid molded vinyl toy figure, shown as a clean 3D render. " +
-    "It is a firm, solid sculpted figure, not inflated and not a balloon: keep the animal's real body shape and its distinctive features (a long body stays long, a thin tail stays thin, a flat body stays flat, a crest or spikes stay as crisp simple shapes), just simplified and a little chubbier, with a slightly larger head and shorter, thicker legs. " +
+    "It is a firm, solid sculpted figure, not inflated and not a balloon: keep the animal's real body shape and its distinctive features (a long body stays long, a thin tail stays thin, a flat body stays flat, a crest or spikes stay as crisp simple shapes), just simplified and a little chubbier. " +
+    "Proportions are those of a cute chibi toy, not the real animal: the head is very large, about as big as the whole body (roughly two heads tall in total), with a small compact body and very short, thick legs. " +
     "Build it from very few large simple forms with clean smooth surfaces and soft smooth transitions. " +
     "Never break a form into smaller lumps: no stacked lobes, no ridges, no creases, no folds, no rolls, no cloud-like bumps, no scalloped edges. " +
     "Fur is never shown or hinted at: no hairs, no tufts, no fluff. " +
