@@ -13,13 +13,19 @@ const COMMON =
   "Fully transparent background. " +
   "No text, no border, no frame, no ground shadow, no props.";
 
-// What the owner cares about most in the drawn styles: fur is never depicted, the outline
-// is smooth even for a fluffy pet, and colors and coat pattern are simplified.
-const NO_FUR =
-  "Most important: do not depict fur. " +
-  "No individual hairs, strands, tufts, spikes, fringes or fur texture anywhere, not even on a very fluffy pet. " +
-  "A fluffy coat becomes a few big, smooth, rounded volumes, like a balloon or a marshmallow, and the silhouette is one smooth rounded contour. " +
-  "Simplify the colors to two or three flat colors, and simplify the coat pattern to at most three or four large plain patches instead of stripes, spots or speckles. ";
+// What the owner cares about most in the drawn styles: the pet is redesigned as a simple
+// mascot with no fur at all. Even "rounded fluffy volumes" read as fur to them; the edge
+// has to be one plain line, as if the fluff were shaved off.
+const DESIGN =
+  "Most important: redesign the pet as a simple cartoon creature with smooth bare skin instead of fur, the way a character designer reduces an animal to a mascot. " +
+  "There is no fur, no fluff and no hair at all, and nothing that hints at it: no tufts, no bumps, no waves, no scallops, no cloud-like or lumpy edges. " +
+  "Every edge of the body is one plain, clean, continuous line, as if the fluff had been shaved off and the shape traced with a single stroke. " +
+  "Build the body from a few plain geometric forms: a simple round head, a simple pear-shaped body, short stubby limbs without toes, and ears and tail as simple flat shapes with one smooth edge. " +
+  "A fluffy pet just becomes a slightly chubbier plain shape. " +
+  "Use only two or three flat colors. " +
+  "Reduce the coat pattern to at most three bold simple patches with clean edges; drop small stripes, spots and speckles, and turn many thin stripes into two or three wide ones. " +
+  "Eyes are small solid black circles with one white dot, no colored iris; a tiny nose; a small smiling mouth. " +
+  "No whiskers, no eyelashes. ";
 
 const PROMPTS: Record<StickerStyle, string> = {
   // Realistic means the owner's actual photo with the background taken away, nothing else.
@@ -31,26 +37,19 @@ const PROMPTS: Record<StickerStyle, string> = {
     "cut off by the edge of the photo. Do not add or complete anything. " +
     "Output only the unchanged pet on a fully transparent background, with clean edges and no outline, " +
     "shadow, text or border.",
-  // 3D: a smooth toy-store figure with a soft sheen and clear soft shadows.
+  // 3D: a smooth in-game character model with soft shading.
   "3d":
-    "Turn this pet into a vinyl toy figure, shown as a studio product photo of the real toy. " +
-    "A cartoon mascot version of this pet with very simple, rounded, chunky shapes, a large head and short limbs. " +
-    NO_FUR +
-    "The surface is perfectly smooth molded vinyl with a soft satin sheen: gentle highlights on the rounded forms and clear soft shadows that show their volume. " +
-    "Painted cartoon eyes: dark ovals with one small white highlight; a small nose; a small happy mouth. " +
-    "No whiskers, no eyelashes. " +
-    "Clean bright colors taken from the pet. " +
+    "Turn this pet into a 3D character model from a classic monster-collecting video game, shown as a clean official render. " +
+    DESIGN +
+    "The surface is perfectly smooth and untextured, like molded plastic, in plain solid colors, with soft simple shading: a gentle highlight and a clear soft shadow on each rounded form to show its volume. " +
     COMMON,
-  // 2D: outlined anime art like the stickers that come in snack bread. A flat, lineless
+  // 2D: outlined cel art like the stickers that come in snack bread. A flat, lineless
   // version did not read as "2D" to the owner.
   "2d":
-    "Redraw this pet as 2D anime character art, in the style of official artwork for a classic monster-collecting video game as printed on collectible bread stickers. " +
-    NO_FUR +
-    "Clean, even, thin dark outlines around every shape, drawn as long smooth curves with very few lines. " +
-    "The outline is never jagged, zigzag, scalloped, feathered or spiky: a fluffy pet is drawn as a smooth round ball-like shape, like a simple plush toy. " +
-    "Flat solid colors with no gradients; at most one slightly darker flat tone for shadow, in one or two large simple areas only. " +
-    "Simple cartoon eyes: solid dark ovals with one white highlight; a tiny nose; a small happy mouth. " +
-    "No whiskers, no eyelashes, no realistic detail, no 3D shading. " +
+    "Redraw this pet as 2D anime character art, in the style of official cel artwork for a classic monster-collecting video game as printed on collectible bread stickers. " +
+    DESIGN +
+    "Thin, even, dark outlines drawn as long smooth single strokes, with almost no lines inside the shapes. " +
+    "Completely flat solid color fills: no gradients, no shading, no highlights, no 3D look. " +
     COMMON,
 };
 
