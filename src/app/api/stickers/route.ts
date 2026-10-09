@@ -11,7 +11,7 @@ import {
 import { isStaff } from "@/lib/server/auth";
 import { localDate } from "@/lib/server/day";
 import { fail, withUser } from "@/lib/server/http";
-import { getStore, toSticker } from "@/lib/server/store";
+import { getStore, thumbUrl, toSticker } from "@/lib/server/store";
 
 function clean(value: unknown, max: number): string | null {
   if (typeof value !== "string") return null;
@@ -48,6 +48,7 @@ export const POST = withUser(async (req, user) => {
       bubble,
       style,
       imageUrl: store.fileUrl(generation.candidates[style]),
+      thumbUrl: thumbUrl(generation.candidates[style]),
       country,
     };
     return NextResponse.json({ sticker });

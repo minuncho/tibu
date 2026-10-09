@@ -1,7 +1,10 @@
 import { flagUrl, formatSerial, type Sticker } from "@/lib/types";
 
 type Props = {
-  sticker: Pick<Sticker, "name" | "imageUrl" | "country"> & { serialNo: number | null };
+  sticker: Pick<Sticker, "name" | "imageUrl" | "country"> & {
+    serialNo: number | null;
+    thumbUrl?: string;
+  };
 };
 
 // Sizes are in cqw so the card scales with whatever box it is placed in.
@@ -14,7 +17,16 @@ export function StickerCard({ sticker }: Props) {
     <div className="sticker">
       <div className="sticker-body">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="sticker-pet" src={sticker.imageUrl} alt="" draggable={false} />
+        <img
+          className="sticker-pet"
+          src={sticker.thumbUrl || sticker.imageUrl}
+          alt=""
+          draggable={false}
+          // An older sticker may have no small version: show the full image instead.
+          onError={(e) => {
+            if (e.currentTarget.src !== sticker.imageUrl) e.currentTarget.src = sticker.imageUrl;
+          }}
+        />
         <div className="sticker-head">
           <span className="sticker-no">
             {sticker.serialNo === null ? "????" : formatSerial(sticker.serialNo)}

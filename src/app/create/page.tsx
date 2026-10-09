@@ -162,7 +162,7 @@ export default function CreatePage() {
                 onClick={() => setStyle(c.style)}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={c.url} alt="" />
+                <img src={c.thumbUrl || c.url} alt="" />
                 {STYLE_LABEL[c.style]}
               </button>
             ))}
@@ -180,6 +180,7 @@ export default function CreatePage() {
                       serialNo: null,
                       name: name.trim(),
                       imageUrl: chosen.url,
+                      thumbUrl: chosen.thumbUrl,
                       country: country || null,
                     }} />
                 </div>

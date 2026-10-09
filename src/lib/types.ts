@@ -30,7 +30,10 @@ export type Sticker = {
   name: string;
   bubble: string;
   style: StickerStyle;
+  // full-size image, used when saving the sticker
   imageUrl: string;
+  // small version for showing on screen; the same as imageUrl when there is none
+  thumbUrl: string;
   // ISO 3166-1 alpha-2 code chosen by the owner
   country: string | null;
 };
@@ -73,7 +76,7 @@ export type StaffReport = {
 // A sticker as staff see it, including ones removed after a report.
 export type StaffSticker = Sticker & { hidden: boolean };
 
-export type Candidate = { style: StickerStyle; url: string };
+export type Candidate = { style: StickerStyle; url: string; thumbUrl: string };
 
 // ISO 3166-1 alpha-2 codes the owner can pick for the sticker flag.
 export const COUNTRY_CODES = (

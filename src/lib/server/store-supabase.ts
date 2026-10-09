@@ -2,6 +2,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { StickerStyle } from "../types";
 import { SUPABASE_SERVICE_ROLE_KEY, SUPABASE_URL } from "./env";
 import type { ReportRow, ReportStatus, StickerRow, Store } from "./store";
+import { thumbPath } from "./thumb";
 
 const BUCKET = "stickers";
 const SAMPLE_WINDOW = 200;
@@ -328,7 +329,11 @@ export const supabaseStore: Store = {
     const kept = new Set((check(stickers) as { image_path: string }[]).map((s) => s.image_path));
     const unused = new Set<string>();
     for (const g of check(generations) as { candidates: Record<string, string> }[]) {
-      for (const file of Object.values(g.candidates)) if (!kept.has(file)) unused.add(file);
+      for (const file of Object.values(g.candidates)) {
+        if (kept.has(file)) continue;
+        unused.add(file);
+        unused.add(thumbPath(file));
+      }
     }
     if (unused.size > 0) {
       const res = await db().storage.from(BUCKET).remove([...unused]);
@@ -340,7 +345,10 @@ export const supabaseStore: Store = {
   },
 
   async putFile(path, bytes, contentType) {
-    const res = await db().storage.from(BUCKET).upload(path, bytes, { contentType, upsert: true });
+    // Paths are never reused, so browsers may keep the files for a year.
+    const res = await db()
+      .storage.from(BUCKET)
+      .upload(path, bytes, { contentType, upsert: true, cacheControl: "31536000" });
     if (res.error) throw new Error(res.error.message);
   },
   fileUrl(path) {

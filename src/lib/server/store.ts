@@ -1,5 +1,6 @@
 import type { ReportReason, Sticker, StickerStyle } from "../types";
 import { isLive } from "./env";
+import { thumbPath } from "./thumb";
 import { demoStore } from "./store-demo";
 import { supabaseStore } from "./store-supabase";
 
@@ -121,6 +122,15 @@ export function getStore(): Store {
   return isLive ? supabaseStore : demoStore;
 }
 
+// Address of the small on-screen version of a stored image. Only AI-converted PNGs in
+// live storage have one; demo files and seed art are shown as they are.
+export function thumbUrl(imagePath: string) {
+  const store = getStore();
+  return isLive && imagePath.endsWith(".png")
+    ? store.fileUrl(thumbPath(imagePath))
+    : store.fileUrl(imagePath);
+}
+
 export function toSticker(row: StickerRow): Sticker {
   return {
     id: row.id,
@@ -129,6 +139,7 @@ export function toSticker(row: StickerRow): Sticker {
     bubble: row.bubble,
     style: row.style,
     imageUrl: getStore().fileUrl(row.imagePath),
+    thumbUrl: thumbUrl(row.imagePath),
     country: row.country,
   };
 }

@@ -7,7 +7,8 @@ import { aiEnabled } from "@/lib/server/env";
 import { fail, withUser } from "@/lib/server/http";
 import { stylizePet } from "@/lib/server/openai";
 import { createsLeft } from "@/lib/server/quota";
-import { getStore } from "@/lib/server/store";
+import { getStore, thumbUrl } from "@/lib/server/store";
+import { makeThumb, thumbPath } from "@/lib/server/thumb";
 
 export const maxDuration = 300;
 
@@ -33,9 +34,12 @@ export const POST = withUser(async (req, user) => {
   if (aiEnabled) {
     const images = await Promise.all(STYLES.map((style) => stylizePet(photo, style)));
     await Promise.all(
-      STYLES.map((style, i) => {
+      STYLES.map(async (style, i) => {
         candidates[style] = `${user.id}/${id}/${style}.png`;
-        return store.putFile(candidates[style], images[i], "image/png");
+        await Promise.all([
+          store.putFile(candidates[style], images[i], "image/png"),
+          store.putFile(thumbPath(candidates[style]), await makeThumb(images[i]), "image/webp"),
+        ]);
       }),
     );
   } else {
@@ -53,6 +57,7 @@ export const POST = withUser(async (req, user) => {
   const result: Candidate[] = STYLES.map((style) => ({
     style,
     url: store.fileUrl(candidates[style]),
+    thumbUrl: thumbUrl(candidates[style]),
   }));
   return NextResponse.json({ generationId: id, candidates: result });
 });
