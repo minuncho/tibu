@@ -1,4 +1,4 @@
-import type { ReportReason, Sticker, StickerStyle } from "../types";
+import type { ReportReason, Sticker, StickerBg, StickerStyle } from "../types";
 import { isLive } from "./env";
 import { thumbPath } from "./thumb";
 import { demoStore } from "./store-demo";
@@ -14,6 +14,7 @@ export type StickerRow = {
   style: StickerStyle;
   imagePath: string;
   country: string | null;
+  bg: StickerBg;
   createdAt: string;
 };
 
@@ -60,6 +61,7 @@ export interface Store {
     style: StickerStyle;
     imagePath: string;
     country: string;
+    bg: StickerBg;
     date: string;
   }): Promise<StickerRow>;
   getSticker(id: string): Promise<StickerRow | null>;
@@ -141,5 +143,6 @@ export function toSticker(row: StickerRow): Sticker {
     imageUrl: getStore().fileUrl(row.imagePath),
     thumbUrl: thumbUrl(row.imagePath),
     country: row.country,
+    bg: row.bg ?? "white",
   };
 }

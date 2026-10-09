@@ -1,6 +1,6 @@
 "use client";
 
-import { flagUrl, formatSerial, type Sticker } from "./types";
+import { flagUrl, formatSerial, STICKER_BGS, type Sticker } from "./types";
 
 const INK = "#3f729b";
 const STICKER_RATIO = 1.18;
@@ -45,6 +45,14 @@ function drawSticker(
   ctx.roundRect(border / 2, border / 2, width - border, height - border, 6 * u);
   ctx.fill();
   ctx.stroke();
+
+  // Colored panel behind the pet (.sticker-bg).
+  if (sticker.bg && sticker.bg !== "white") {
+    ctx.fillStyle = STICKER_BGS[sticker.bg];
+    ctx.beginPath();
+    ctx.roundRect(4 * u, 19 * u, 92 * u, 95 * u, 4 * u);
+    ctx.fill();
+  }
 
   const box = { x: 8 * u, y: 21 * u, w: 84 * u, h: 90 * u };
   const scale = Math.min(box.w / pet.naturalWidth, box.h / pet.naturalHeight);

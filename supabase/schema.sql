@@ -24,6 +24,9 @@ create table if not exists stickers (
   style text not null check (style in ('real', '3d', '2d')),
   image_path text not null,
   country text not null check (country ~ '^[A-Z]{2}$'),
+  -- color of the panel behind the pet, picked by the maker
+  bg text not null default 'white'
+    check (bg in ('white', 'sky', 'pink', 'yellow', 'mint', 'lavender', 'cream')),
   -- set when staff uphold a report; hidden stickers leave the draw pool and all albums
   hidden boolean not null default false,
   local_date date not null,

@@ -24,6 +24,19 @@ export type ReportReason = keyof typeof REPORT_REASONS;
 // Longest reply a maker can send about a removed sticker.
 export const REPLY_MAX = 200;
 
+// Colors the maker can put behind the pet. Kept very pale so every pet stays readable.
+export const STICKER_BGS = {
+  white: "#ffffff",
+  sky: "#dff1ff",
+  pink: "#ffe3ec",
+  yellow: "#fff4c7",
+  mint: "#d9f5e6",
+  lavender: "#ebe3ff",
+  cream: "#fbefdc",
+} as const;
+export type StickerBg = keyof typeof STICKER_BGS;
+export const STICKER_BG_IDS = Object.keys(STICKER_BGS) as StickerBg[];
+
 export type Sticker = {
   id: string;
   serialNo: number;
@@ -36,6 +49,8 @@ export type Sticker = {
   thumbUrl: string;
   // ISO 3166-1 alpha-2 code chosen by the owner
   country: string | null;
+  // color of the panel behind the pet
+  bg: StickerBg;
 };
 
 export type AlbumEntry = {

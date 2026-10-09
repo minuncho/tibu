@@ -3,9 +3,11 @@ import {
   BUBBLE_MAX,
   COUNTRY_CODES,
   NAME_MAX,
+  STICKER_BG_IDS,
   STYLES,
   TEST_SERIAL,
   type Sticker,
+  type StickerBg,
   type StickerStyle,
 } from "@/lib/types";
 import { isStaff } from "@/lib/server/auth";
@@ -30,6 +32,8 @@ export const POST = withUser(async (req, user) => {
   if (!STYLES.includes(style)) return fail(400, "Pick a style");
   const country = String(body.country);
   if (!COUNTRY_CODES.includes(country)) return fail(400, "Pick a country");
+  // Older clients send no background: those stickers stay white.
+  const bg: StickerBg = STICKER_BG_IDS.includes(body.bg) ? body.bg : "white";
 
   const store = getStore();
   const generation = await store.getGeneration(String(body.generationId));
@@ -50,6 +54,7 @@ export const POST = withUser(async (req, user) => {
       imageUrl: store.fileUrl(generation.candidates[style]),
       thumbUrl: thumbUrl(generation.candidates[style]),
       country,
+      bg,
     };
     return NextResponse.json({ sticker });
   }
@@ -61,6 +66,7 @@ export const POST = withUser(async (req, user) => {
     style,
     imagePath: generation.candidates[style],
     country,
+    bg,
     date: localDate(req),
   });
   return NextResponse.json({ sticker: toSticker(row) });

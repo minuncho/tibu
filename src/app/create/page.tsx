@@ -17,10 +17,13 @@ import {
   COUNTRY_CODES,
   CREATES_PER_DAY,
   NAME_MAX,
+  STICKER_BGS,
+  STICKER_BG_IDS,
   STYLE_LABEL,
   flagEmoji,
   type Candidate,
   type Sticker,
+  type StickerBg,
   type StickerStyle,
 } from "@/lib/types";
 
@@ -50,6 +53,7 @@ export default function CreatePage() {
   const [style, setStyle] = useState<StickerStyle | null>(null);
   const [name, setName] = useState("");
   const [bubble, setBubble] = useState("");
+  const [bg, setBg] = useState<StickerBg>("white");
   const [pickedCountry, setPickedCountry] = useState<string | null>(null);
   // Until the owner picks, preselect the detected country.
   const country = pickedCountry ?? state?.country ?? "";
@@ -109,6 +113,7 @@ export default function CreatePage() {
         name,
         bubble,
         country,
+        bg,
       });
       sessionStorage.removeItem(PENDING_KEY);
       setDone(sticker);
@@ -173,6 +178,19 @@ export default function CreatePage() {
 
           {chosen && (
             <>
+              <div className="swatches">
+                {STICKER_BG_IDS.map((id) => (
+                  <button
+                    key={id}
+                    className="swatch"
+                    aria-label={`${id} background`}
+                    data-on={id === bg}
+                    style={{ background: STICKER_BGS[id] }}
+                    onClick={() => setBg(id)}
+                  />
+                ))}
+              </div>
+
               <div className="sticker-view">
                 <SpeechBubble text={bubble.trim() || "..."} />
                 <div className="sticker-view-card">
@@ -182,6 +200,7 @@ export default function CreatePage() {
                       imageUrl: chosen.url,
                       thumbUrl: chosen.thumbUrl,
                       country: country || null,
+                      bg,
                     }} />
                 </div>
               </div>

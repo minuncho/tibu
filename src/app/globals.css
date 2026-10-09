@@ -390,6 +390,15 @@ button {
   overflow: hidden;
 }
 
+.sticker-bg {
+  position: absolute;
+  left: 4cqw;
+  top: 19cqw;
+  width: 92cqw;
+  height: 95cqw;
+  border-radius: 4cqw;
+}
+
 /* Fades in so a picture that arrives late does not pop */
 .sticker-pet {
   animation: fade 0.25s ease;
@@ -824,6 +833,28 @@ a.back {
   margin-bottom: 4px;
   border-radius: 12px;
   object-fit: contain;
+}
+
+/* Row of round color choices for the sticker background */
+.swatches {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.swatch {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1.5px solid var(--line);
+  border-radius: 50%;
+  outline: 2.5px solid transparent;
+  outline-offset: 2px;
+}
+
+.swatch[data-on="true"] {
+  outline-color: var(--sky-deep);
 }
 
 .field {

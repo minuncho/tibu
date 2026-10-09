@@ -1,7 +1,8 @@
-import { flagUrl, formatSerial, type Sticker } from "@/lib/types";
+import { flagUrl, formatSerial, STICKER_BGS, type Sticker } from "@/lib/types";
 
 type Props = {
   sticker: Pick<Sticker, "name" | "imageUrl" | "country"> & {
+    bg?: Sticker["bg"];
     serialNo: number | null;
     thumbUrl?: string;
   };
@@ -16,6 +17,10 @@ export function StickerCard({ sticker }: Props) {
   return (
     <div className="sticker">
       <div className="sticker-body">
+        {/* Colored panel behind the pet; the name row above it stays white. */}
+        {sticker.bg && sticker.bg !== "white" && (
+          <span className="sticker-bg" style={{ background: STICKER_BGS[sticker.bg] }} />
+        )}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           className="sticker-pet"

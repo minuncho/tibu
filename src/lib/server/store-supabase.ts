@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import type { StickerStyle } from "../types";
+import { STICKER_BG_IDS, type StickerBg, type StickerStyle } from "../types";
 import { SUPABASE_SERVICE_ROLE_KEY, SUPABASE_URL } from "./env";
 import type { ReportRow, ReportStatus, StickerRow, Store } from "./store";
 import { thumbPath } from "./thumb";
@@ -25,6 +25,8 @@ type DbSticker = {
   style: StickerStyle;
   image_path: string;
   country: string | null;
+  // missing on a database that has not run update-002-sticker-bg.sql yet
+  bg?: string | null;
   created_at: string;
 };
 
@@ -47,6 +49,7 @@ function toRow(s: DbSticker): StickerRow {
     style: s.style,
     imagePath: s.image_path,
     country: s.country,
+    bg: STICKER_BG_IDS.includes(s.bg as StickerBg) ? (s.bg as StickerBg) : "white",
     createdAt: s.created_at,
   };
 }
@@ -104,22 +107,22 @@ export const supabaseStore: Store = {
   },
 
   async createSticker(s) {
-    const row = check(
-      await db()
-        .from("stickers")
-        .insert({
-          owner_id: s.ownerId,
-          name: s.name,
-          bubble: s.bubble,
-          style: s.style,
-          image_path: s.imagePath,
-          country: s.country,
-          local_date: s.date,
-        })
-        .select("*")
-        .single(),
-    );
-    return toRow(row);
+    const values = {
+      owner_id: s.ownerId,
+      name: s.name,
+      bubble: s.bubble,
+      style: s.style,
+      image_path: s.imagePath,
+      country: s.country,
+      local_date: s.date,
+    };
+    let result = await db().from("stickers").insert({ ...values, bg: s.bg }).select("*").single();
+    // A database without the bg column yet (update-002-sticker-bg.sql not run): save the
+    // sticker anyway, with the default white background.
+    if (result.error && /\bbg\b/.test(result.error.message)) {
+      result = await db().from("stickers").insert(values).select("*").single();
+    }
+    return toRow(check(result));
   },
   async getSticker(id) {
     const row = check(await db().from("stickers").select("*").eq("id", id).maybeSingle());
