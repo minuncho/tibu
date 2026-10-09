@@ -125,10 +125,10 @@ export function getStore(): Store {
 // Address of the small on-screen version of a stored image. Only AI-converted PNGs in
 // live storage have one; demo files and seed art are shown as they are.
 export function thumbUrl(imagePath: string) {
-  // Served through /img so it is cached at the edge (see src/app/img).
+  const store = getStore();
   return isLive && imagePath.endsWith(".png")
-    ? `/img/${thumbPath(imagePath)}`
-    : getStore().fileUrl(imagePath);
+    ? store.fileUrl(thumbPath(imagePath))
+    : store.fileUrl(imagePath);
 }
 
 export function toSticker(row: StickerRow): Sticker {

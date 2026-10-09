@@ -15,7 +15,11 @@ export function WaitingStickers() {
 
   useEffect(() => {
     api<{ stickers: Sticker[] }>("/api/stickers/sample")
-      .then((data) => setStickers(data.stickers))
+      .then((data) => {
+        // Fetch every picture now, so each one is already there when its turn comes.
+        for (const sticker of data.stickers) new Image().src = sticker.thumbUrl || sticker.imageUrl;
+        setStickers(data.stickers);
+      })
       .catch(() => {});
   }, []);
 
