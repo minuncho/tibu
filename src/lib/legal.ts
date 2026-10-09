@@ -7,7 +7,7 @@ export const SUPPORT_COUNTRIES: string[] = ["KR"];
 
 // Details shown on the Terms and Privacy pages.
 export const LEGAL = {
-  appName: "Tibu",
+  appName: "tibu",
   contactEmail: "minunsyc@gmail.com",
   // the day the app goes public
   effectiveDate: "October 7, 2026",

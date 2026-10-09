@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ImageResponse } from "next/og";
 
-export const alt = "Tibu: turn your pet into a sticker and collect pets from around the world";
+export const alt = "tibu: turn your pet into a sticker and collect pets from around the world";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -55,7 +55,7 @@ export default async function OpenGraphImage() {
         }}
       >
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: 190, color: "#24384a", lineHeight: 1 }}>Tibu</div>
+          <div style={{ fontSize: 190, color: "#24384a", lineHeight: 1 }}>tibu</div>
           <div style={{ marginTop: 28, fontSize: 34, color: "#7ea6c6", lineHeight: 1.35 }}>
             Turn your pet into a sticker.
           </div>

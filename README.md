@@ -1,10 +1,10 @@
-# Tibu
+# tibu
 
 Turn a photo of your pet into a collectible sticker, then draw stickers of other pets from around the world.
 
 **Try it: https://tibu-sand.vercel.app**
 
-[![Tibu: the name on the left; a gacha machine, a camera, an album and a pet sticker on the right](docs/preview.png)](https://tibu-sand.vercel.app)
+[![tibu: the name on the left; a gacha machine, a camera, an album and a pet sticker on the right](docs/preview.png)](https://tibu-sand.vercel.app)
 
 ## How it works
 

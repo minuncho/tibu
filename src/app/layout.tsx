@@ -19,10 +19,10 @@ const DESCRIPTION = "Turn your pet into a sticker and collect pets from around t
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Tibu",
+  title: "tibu",
   description: DESCRIPTION,
-  openGraph: { title: "Tibu", description: DESCRIPTION, siteName: "Tibu", type: "website" },
-  twitter: { card: "summary_large_image", title: "Tibu", description: DESCRIPTION },
+  openGraph: { title: "tibu", description: DESCRIPTION, siteName: "tibu", type: "website" },
+  twitter: { card: "summary_large_image", title: "tibu", description: DESCRIPTION },
   other: { google: "notranslate" },
 };
 

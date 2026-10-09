@@ -38,7 +38,7 @@ export default function LoginPage() {
 
   return (
     <main className="login">
-      <h1>Tibu</h1>
+      <h1>tibu</h1>
       <GachaArt />
       <div className="stack" style={{ width: "100%" }}>
         <button className="btn btn-google" disabled={!mode} onClick={signIn}>

@@ -183,7 +183,7 @@ export default function HomePage() {
             <h2>Delete your account?</h2>
             <p className="note">
               Your album, draws and remaining chances are erased and cannot be recovered. Stickers
-              you made stay in Tibu for others to collect, no longer linked to you.
+              you made stay in tibu for others to collect, no longer linked to you.
             </p>
             <div className="actions" style={{ marginTop: 0 }}>
               <button className="btn btn-danger" disabled={deleting} onClick={deleteAccount}>
