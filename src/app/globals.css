@@ -4,6 +4,8 @@
   --sky-pale: #e3f3ff;
   --surface: #f2f9ff;
   --line: #d9eaf7;
+  /* primary buttons: deeper than the theme sky so they read as active, not disabled */
+  --action: #4a9be0;
   --ink: #3f729b;
   --ink-soft: #7ea6c6;
   --text: #24384a;
@@ -532,7 +534,7 @@ a.back {
   padding: 0 20px;
   border: 0;
   border-radius: 26px;
-  background: var(--sky-deep);
+  background: var(--action);
   color: var(--white);
   font-size: 16px;
   font-weight: 700;
@@ -548,7 +550,7 @@ a.back {
 }
 
 .btn:disabled {
-  background: #c9d9e5;
+  background: #d5e0ea;
 }
 
 .btn-ghost,
@@ -874,15 +876,12 @@ a.back {
   accent-color: var(--sky-deep);
 }
 
-/* House rule shown before a photo is converted */
-.rule {
+/* Guideline shown above the photo picker */
+.guide {
   width: 100%;
   margin: 0;
-  padding: 10px 14px;
-  border-radius: 14px;
-  background: var(--surface);
-  color: var(--ink);
-  font-size: 13px;
+  color: var(--text);
+  font-size: 14px;
   line-height: 1.4;
   text-align: center;
 }

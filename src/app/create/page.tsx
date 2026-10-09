@@ -266,6 +266,8 @@ export default function CreatePage() {
           </>
         ) : (
           <>
+            {/* Shown above the photo as a guideline, so it does not read as a verdict on the chosen photo. */}
+            <p className="guide">Pet photos only. Anything else may be removed without notice.</p>
             {source ? (
               <Cropper ref={cropper} src={source} />
             ) : (
@@ -294,7 +296,6 @@ export default function CreatePage() {
             ) : (
               <p className="note">Tap to add a photo of your pet</p>
             )}
-            <p className="rule">Pet photos only. Anything else may be removed without notice.</p>
             {error && <p className="error">{error}</p>}
             <button className="btn" disabled={!source || left === 0} onClick={convert}>
               Convert photo
