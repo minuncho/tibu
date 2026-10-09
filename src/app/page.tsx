@@ -209,22 +209,7 @@ export default function HomePage() {
                 </span>
               </div>
             </div>
-
-            <button
-              className="frame"
-              aria-label="Your latest sticker"
-              onClick={() =>
-                framed
-                  ? setShown({ sticker: framed, drawn: false })
-                  : state && showToast("The newest sticker you make goes in this frame.")
-              }
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img className="art" src="/art/frame.png" alt="" draggable={false} />
-              <div className="frame-inside">{framed && <StickerCard sticker={framed} />}</div>
-            </button>
           </div>
-          <div className="shelf-board" />
         </section>
 
         <section className="shelf">
@@ -257,11 +242,24 @@ export default function HomePage() {
               <p className="shelf-note">Make a sticker to get another snack</p>
             )}
           </div>
-          <div className="shelf-board" />
         </section>
 
         <section className="shelf">
           <div className="shelf-items">
+            <button
+              className="frame"
+              aria-label="Your latest sticker"
+              onClick={() =>
+                framed
+                  ? setShown({ sticker: framed, drawn: false })
+                  : state && showToast("The newest sticker you make goes in this frame.")
+              }
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className="art" src="/art/frame.png" alt="" draggable={false} />
+              <div className="frame-inside">{framed && <StickerCard sticker={framed} />}</div>
+            </button>
+
             <button className="shelf-item" aria-label="Sticker album" onClick={() => router.push("/album")}>
               {hints && <span className="hint">Your album</span>}
               <AlbumArt />
@@ -281,7 +279,6 @@ export default function HomePage() {
               <CameraArt />
             </button>
           </div>
-          <div className="shelf-board" />
         </section>
       </div>
 

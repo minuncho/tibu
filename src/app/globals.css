@@ -244,13 +244,26 @@ button {
   opacity: 0.5;
 }
 
-/* Three shelves: calendar + framed sticker, today's breads, album + camera. */
+/* Three rows: the day calendar, today's breads, then frame + album + camera. */
 .shelves {
-  margin: auto 0;
+  flex: 1;
   padding: 0 4px 6vh;
   display: flex;
   flex-direction: column;
-  gap: 26px;
+  gap: 34px;
+}
+
+/* The calendar sits at the very top, level with the profile button; the rest is centered below. */
+.shelf:first-child {
+  margin-top: -44px;
+}
+
+.shelf:nth-child(2) {
+  margin-top: auto;
+}
+
+.shelf:last-child {
+  margin-bottom: auto;
 }
 
 .shelf-items {
@@ -260,13 +273,7 @@ button {
   padding: 0 10px;
 }
 
-/* The furniture keeps natural colors (wood, red calendar, gray camera); only the UI is rose. */
-.shelf-board {
-  height: 12px;
-  border-radius: 6px;
-  background: #b98a63;
-}
-
+/* The objects keep natural colors (wood frame, red calendar, gray camera); only the UI is rose. */
 .shelves .art {
   display: block;
   width: 100%;
@@ -289,13 +296,13 @@ button {
 }
 
 .shelf-item {
-  width: 36%;
+  width: 26%;
 }
 
 /* Tear-off day calendar: today's date is written on the blank page of the picture. */
 .daycal {
   position: relative;
-  width: 34%;
+  width: 27%;
 }
 
 .daycal-page {
@@ -335,7 +342,7 @@ button {
 
 /* Picture frame holding the newest sticker the user made. */
 .frame {
-  width: 31%;
+  width: 22%;
 }
 
 .frame-inside {
