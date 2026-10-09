@@ -10,16 +10,17 @@ function Art({ name }: { name: string }) {
   return <img className="art" src={`/art/${name}.png`} alt="" draggable={false} />;
 }
 
-const DONUTS = 6;
+const BREADS = 12;
 const BLANK = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
 
-// Stickers come out of a bagged donut, the way real ones come in a pack of snack bread.
-// A different donut each time it appears; picked after mount so server and browser agree.
-export function DonutArt() {
+// Stickers come out of a bagged snack bread (donuts, waffles, melon bread...), the way real
+// ones come in a pack of bread. A different one each time; picked after mount so server and
+// browser agree.
+export function BreadArt() {
   const [n, setN] = useState(0);
-  useEffect(() => setN(1 + Math.floor(Math.random() * DONUTS)), []);
+  useEffect(() => setN(1 + Math.floor(Math.random() * BREADS)), []);
   // eslint-disable-next-line @next/next/no-img-element
-  return <img className="art" src={n ? `/art/donut-${n}.png` : BLANK} alt="" draggable={false} />;
+  return <img className="art" src={n ? `/art/bread-${n}.png` : BLANK} alt="" draggable={false} />;
 }
 export const CameraArt = () => <Art name="camera" />;
 export const AlbumArt = () => <Art name="album" />;

@@ -15,9 +15,9 @@ import { SUPPORT_COUNTRIES, SUPPORT_URL } from "@/lib/legal";
 import { markHomeSeen } from "@/lib/nav";
 
 const HINTS_KEY = "seenHints";
-const DONUTS = 6;
-// Staff have no limit, so their shelf always shows this many donuts.
-const STAFF_DONUTS = 3;
+const BREADS = 12;
+// Staff have no limit, so their shelf always shows this many breads.
+const STAFF_BREADS = 3;
 
 function preload(url: string) {
   return new Promise<void>((resolve) => {
@@ -61,25 +61,25 @@ export default function HomePage() {
     Boolean(SUPPORT_URL && state) &&
     (SUPPORT_COUNTRIES.length === 0 || SUPPORT_COUNTRIES.includes(state?.country ?? ""));
 
-  // Middle shelf: one donut per draw left today. An opened donut leaves its sticker in the
+  // Middle shelf: one bagged bread per draw left today. An opened one leaves its sticker in the
   // same spot. slotOf[i] is the shelf position of the i-th sticker drawn today.
   const drawn = state?.drawnToday ?? [];
-  const donutsLeft = !state ? 0 : state.unlimited ? STAFF_DONUTS : state.drawsLeft;
+  const breadsLeft = !state ? 0 : state.unlimited ? STAFF_BREADS : state.drawsLeft;
   const [slotOf, setSlotOf] = useState<number[]>([]);
   const [opening, setOpening] = useState<number | null>(null);
-  // which of the donut pictures sits at each shelf position
-  // The six pictures in a random order, repeated, so neighbors never match.
+  // which of the bread pictures sits at each shelf position
+  // The bread pictures in a random order, repeated, so neighbors never match.
   const [looks] = useState(() =>
-    Array.from({ length: DONUTS }, (_, i) => i + 1).sort(() => Math.random() - 0.5),
+    Array.from({ length: BREADS }, (_, i) => i + 1).sort(() => Math.random() - 0.5),
   );
   // After a reload (or anything else that changes today's draws) stickers simply come first.
   const positions = slotOf.length === drawn.length ? slotOf : drawn.map((_, i) => i);
-  const slots = Array.from({ length: drawn.length + donutsLeft }, (_, slot) => {
+  const slots = Array.from({ length: drawn.length + breadsLeft }, (_, slot) => {
     const i = positions.indexOf(slot);
     return i >= 0 ? drawn[i] : null;
   });
 
-  async function openDonut(slot: number) {
+  async function openBread(slot: number) {
     if (opening !== null) return;
     setOpening(slot);
     try {
@@ -243,18 +243,18 @@ export default function HomePage() {
                 <button
                   key={slot}
                   className="slot"
-                  aria-label="Open a donut"
+                  aria-label="Open a snack"
                   data-spin={opening === slot}
-                  onClick={() => openDonut(slot)}
+                  onClick={() => openBread(slot)}
                 >
                   {hints && slot === drawn.length && <span className="hint">Open one</span>}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img className="art" src={`/art/donut-${looks[slot % looks.length]}.png`} alt="" draggable={false} />
+                  <img className="art" src={`/art/bread-${looks[slot % looks.length]}.png`} alt="" draggable={false} />
                 </button>
               ),
             )}
-            {state && donutsLeft === 0 && (
-              <p className="shelf-note">Make a sticker to get another donut</p>
+            {state && breadsLeft === 0 && (
+              <p className="shelf-note">Make a sticker to get another snack</p>
             )}
           </div>
           <div className="shelf-board" />

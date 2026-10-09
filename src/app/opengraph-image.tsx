@@ -24,14 +24,14 @@ async function loadFont() {
 export default async function OpenGraphImage() {
   // Each path is spelled out so the bundler can see exactly which files are read.
   const dataUri = (bytes: Buffer) => `data:image/png;base64,${bytes.toString("base64")}`;
-  const [sticker, donutPng, cameraPng, albumPng, font] = await Promise.all([
+  const [sticker, breadPng, cameraPng, albumPng, font] = await Promise.all([
     readFile(path.join(process.cwd(), "src/assets/og-sticker.png")),
-    readFile(path.join(process.cwd(), "public/art/donut-1.png")),
+    readFile(path.join(process.cwd(), "public/art/bread-1.png")),
     readFile(path.join(process.cwd(), "public/art/camera.png")),
     readFile(path.join(process.cwd(), "public/art/album.png")),
     loadFont(),
   ]);
-  const [stickerSrc, donut, camera, album] = [sticker, donutPng, cameraPng, albumPng].map(dataUri);
+  const [stickerSrc, bread, camera, album] = [sticker, breadPng, cameraPng, albumPng].map(dataUri);
   const cell = {
     width: ITEM,
     height: ITEM,
@@ -66,7 +66,7 @@ export default async function OpenGraphImage() {
 
         <div style={{ width: ITEM * 2 + 20, display: "flex", flexWrap: "wrap", gap: 20 }}>
           <div style={cell}>
-            <img src={donut} width={210} height={210} style={{ objectFit: "contain" }} alt="" />
+            <img src={bread} width={210} height={210} style={{ objectFit: "contain" }} alt="" />
           </div>
           <div style={cell}>
             <img src={camera} width={210} height={210} style={{ objectFit: "contain" }} alt="" />

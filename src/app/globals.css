@@ -244,7 +244,7 @@ button {
   opacity: 0.5;
 }
 
-/* Three shelves: calendar + framed sticker, today's donuts, album + camera. */
+/* Three shelves: calendar + framed sticker, today's breads, album + camera. */
 .shelves {
   margin: auto 0;
   padding: 0 4px 6vh;
@@ -260,10 +260,11 @@ button {
   padding: 0 10px;
 }
 
+/* The furniture keeps natural colors (wood, red calendar, gray camera); only the UI is rose. */
 .shelf-board {
   height: 12px;
   border-radius: 6px;
-  background: var(--sky);
+  background: #b98a63;
 }
 
 .shelves .art {
@@ -300,10 +301,10 @@ button {
 .daycal-page {
   container-type: inline-size;
   position: absolute;
-  left: 3%;
-  top: 31%;
-  width: 93%;
-  height: 67%;
+  left: 2%;
+  top: 32.6%;
+  width: 96%;
+  height: 64.8%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -315,7 +316,7 @@ button {
 .daycal-month {
   font-size: 15cqw;
   font-weight: 700;
-  color: var(--sky-deep);
+  color: #e0453f;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -324,25 +325,25 @@ button {
   margin: 2cqw 0 3cqw;
   font-size: 40cqw;
   font-weight: 800;
-  color: #4b2f37;
+  color: #3a3335;
 }
 
 .daycal-week {
   font-size: 12cqw;
-  color: #cf9ca4;
+  color: #9a9093;
 }
 
 /* Picture frame holding the newest sticker the user made. */
 .frame {
-  width: 33%;
+  width: 31%;
 }
 
 .frame-inside {
   position: absolute;
-  left: 16.1%;
-  top: 13.5%;
-  width: 67.1%;
-  height: 73.5%;
+  left: 16.5%;
+  top: 12.3%;
+  width: 67.5%;
+  height: 75.3%;
   display: grid;
   place-items: center;
 }
@@ -356,7 +357,7 @@ button {
   box-shadow: none;
 }
 
-/* Today's donuts and the stickers that came out of them; scrolls sideways when there are many. */
+/* Today's breads and the stickers that came out of them; scrolls sideways when there are many. */
 .shelf-row {
   justify-content: safe center;
   gap: 8px;
