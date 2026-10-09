@@ -7,9 +7,11 @@ import { PublicError } from "./http";
 
 // Shared by the two drawn styles.
 const COMMON =
-  "Keep the same animal so the owner recognizes their pet: the same colors and the same markings in the same places. " +
+  "Keep the same animal so the owner recognizes their pet: the same main colors, with its markings in the same places. " +
+  "Keep the pose from the photo: a sitting pet stays sitting, a lying pet stays lying, facing the same way. " +
   "Show the whole pet, centered, with a little margin. " +
-  "Fully transparent background. No text, no border, no frame, no ground shadow, no props.";
+  "Fully transparent background. " +
+  "No text, no border, no frame, no ground shadow, no props.";
 
 const PROMPTS: Record<StickerStyle, string> = {
   // Realistic means the owner's actual photo with the background taken away, nothing else.
@@ -21,20 +23,23 @@ const PROMPTS: Record<StickerStyle, string> = {
     "cut off by the edge of the photo. Do not add or complete anything. " +
     "Output only the unchanged pet on a fully transparent background, with clean edges and no outline, " +
     "shadow, text or border.",
+  // Drawn styles: as simple and gentle as possible. Detailed fur and large eyes read as creepy.
   "3d":
-    "Turn this pet into a collectible vinyl toy figure, as a clean 3D render. " +
-    "Simplify it heavily: a smooth, inflated, balloon-like body with a big round head and short chunky legs. " +
-    "No fur strands, no hair texture and no fluff anywhere: every surface is smooth molded vinyl with a soft gloss. " +
-    "Use only the pet's two or three main colors, as large clean patches where its markings are. " +
-    "Plain solid black bead eyes, a small rounded nose, no whiskers, no eyelashes, no teeth. " +
-    "Three-quarter view, soft even studio lighting. " +
+    "Turn this pet into a cute, very simple vinyl toy figure, as a clean 3D render. " +
+    "Simplify as far as possible: soft rounded blob-like shapes, a big round head, a small body, short stubby legs and almost no detail. " +
+    "Every surface is completely smooth, like soft matte vinyl: no fur texture, no hair strands, no fluff. " +
+    "Reduce the markings to a few large simple patches, with no fine stripes or speckles. " +
+    "The face must look gentle and friendly: two small solid black dot eyes set wide apart, a tiny nose and a tiny smile. " +
+    "No large or shiny eyes, no pupils or irises, no whiskers, no eyelashes, no teeth. " +
+    "Soft pastel-leaning versions of the pet's own colors, soft even studio lighting. " +
     COMMON,
   "2d":
-    "Redraw this pet as a very simple flat mascot icon. " +
-    "One smooth rounded silhouette with no fur tufts, spikes or stray hairs. " +
-    "Three or four flat pastel colors as large simple shapes, with no outlines, no gradients, no shading and no highlights. " +
-    "Front-facing and symmetric, standing upright, with a big round head, a small round body and short stubby legs. " +
-    "Face: two small solid dark oval eyes, a tiny nose and two pink cheek ovals, nothing else. " +
+    "Redraw this pet as a cute, extremely simple flat mascot. " +
+    "Soft rounded blob-like shapes with a big round head and almost no detail: no fur tufts, spikes or stray hairs. " +
+    "At most three or four flat pastel colors, with the markings reduced to a few large simple patches and no fine stripes. " +
+    "No outlines, no gradients, no shading, no highlights. " +
+    "The face must look gentle and friendly: two small solid black dot eyes set wide apart, a tiny nose and two pink cheek ovals. " +
+    "No large eyes, no pupils or irises, no whiskers. " +
     "Use pastel versions of the pet's own colors. " +
     COMMON,
 };
