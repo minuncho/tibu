@@ -55,7 +55,7 @@ With no keys configured the app starts in **demo mode**: a fake sign-in, data ke
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase `anon` key |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase `service_role` key (server only, keep it secret) |
 | `OPENAI_API_KEY` | OpenAI API key with credit on the account |
-| `OPENAI_IMAGE_MODEL` | Optional. Defaults to `gpt-image-1` |
+| `OPENAI_IMAGE_MODEL` | Optional. Defaults to `gpt-image-2.5-sunburst` |
 | `STAFF_EMAILS` | Optional. Extra Google accounts allowed into `/staff`, comma-separated |
 
 Set the same variables in Vercel. `vercel.json` pins server functions to Sydney (`syd1`) to sit next to the database; change it if your Supabase project is in another region.
