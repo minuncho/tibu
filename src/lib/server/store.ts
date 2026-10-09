@@ -91,6 +91,10 @@ export interface Store {
   countDailyDraws(userId: string, date: string): Promise<number>;
   hasDrawn(userId: string, stickerId: string): Promise<boolean>;
   listDrawn(userId: string): Promise<DrawnRow[]>;
+  // Stickers the user drew on that local day, oldest first.
+  listDrawnOn(userId: string, date: string): Promise<StickerRow[]>;
+  // Newest sticker the user made.
+  latestMade(userId: string): Promise<StickerRow | null>;
   // Newest sticker the user made or drew, whichever happened last.
   latestInAlbum(userId: string): Promise<StickerRow | null>;
 

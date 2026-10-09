@@ -28,15 +28,19 @@ export async function GET(req: Request) {
     unlimited: false,
     removed: [],
     latest: null,
+    latestMade: null,
+    drawnToday: [],
   };
   if (user) {
     // One parallel wave of queries: every extra sequential step is a full round trip to the database.
     const store = getStore();
-    const [generations, draws, latest, removed] = await Promise.all([
+    const [generations, draws, latest, removed, latestMade, drawnToday] = await Promise.all([
       store.countGenerations(user.id, date),
       drawsLeft(user.id, date),
       store.latestInAlbum(user.id),
       store.listRemovedMade(user.id),
+      store.latestMade(user.id),
+      store.listDrawnOn(user.id, date),
     ]);
     state.removed = removed.map((s) => ({ id: s.id, serialNo: s.serialNo, name: s.name }));
     if (hasNoLimits(user)) {
@@ -48,6 +52,8 @@ export async function GET(req: Request) {
       state.drawsLeft = draws;
     }
     state.latest = latest ? toSticker(latest) : null;
+    state.latestMade = latestMade ? toSticker(latestMade) : null;
+    state.drawnToday = drawnToday.map(toSticker);
   }
   return NextResponse.json(state);
 }

@@ -55,24 +55,24 @@ export default async function OpenGraphImage() {
         }}
       >
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: 190, color: "#24384a", lineHeight: 1 }}>tibu</div>
-          <div style={{ marginTop: 28, fontSize: 34, color: "#7ea6c6", lineHeight: 1.35 }}>
+          <div style={{ fontSize: 190, color: "#4b2f37", lineHeight: 1 }}>tibu</div>
+          <div style={{ marginTop: 28, fontSize: 34, color: "#cf9ca4", lineHeight: 1.35 }}>
             Turn your pet into a sticker.
           </div>
-          <div style={{ fontSize: 34, color: "#7ea6c6", lineHeight: 1.35 }}>
+          <div style={{ fontSize: 34, color: "#cf9ca4", lineHeight: 1.35 }}>
             Collect pets from around the world.
           </div>
         </div>
 
         <div style={{ width: ITEM * 2 + 20, display: "flex", flexWrap: "wrap", gap: 20 }}>
           <div style={cell}>
-            <img src={donut} width={210} height={210} alt="" />
+            <img src={donut} width={210} height={210} style={{ objectFit: "contain" }} alt="" />
           </div>
           <div style={cell}>
-            <img src={camera} width={210} height={210} alt="" />
+            <img src={camera} width={210} height={210} style={{ objectFit: "contain" }} alt="" />
           </div>
           <div style={cell}>
-            <img src={album} width={210} height={210} alt="" />
+            <img src={album} width={210} height={210} style={{ objectFit: "contain" }} alt="" />
           </div>
           <div style={cell}>
             {/* eslint-disable-next-line @next/next/no-img-element */}

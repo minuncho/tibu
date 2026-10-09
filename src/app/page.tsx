@@ -3,22 +3,36 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AlbumArt, CameraArt, EmptyStickerArt, DonutArt } from "@/components/Art";
+import { AlbumArt, CameraArt } from "@/components/Art";
 import { Coffee } from "@/components/Coffee";
 import { RemovalNotice } from "@/components/RemovalNotice";
 import { StickerCard } from "@/components/Sticker";
 import { StickerDetail } from "@/components/StickerDetail";
 import { clearAppState, useAppState } from "@/components/useAppState";
 import { api } from "@/lib/api";
+import type { Sticker } from "@/lib/types";
 import { SUPPORT_COUNTRIES, SUPPORT_URL } from "@/lib/legal";
 import { markHomeSeen } from "@/lib/nav";
 
 const HINTS_KEY = "seenHints";
+const DONUTS = 6;
+// Staff have no limit, so their shelf always shows this many donuts.
+const STAFF_DONUTS = 3;
+
+function preload(url: string) {
+  return new Promise<void>((resolve) => {
+    const img = new Image();
+    img.onload = img.onerror = () => resolve();
+    img.src = url;
+    setTimeout(resolve, 3000);
+  });
+}
 
 export default function HomePage() {
   const router = useRouter();
-  const { state } = useAppState();
-  const [showLatest, setShowLatest] = useState(false);
+  const { state, refresh } = useAppState();
+  // sticker opened full screen; "drawn" ones can be reported from there
+  const [shown, setShown] = useState<{ sticker: Sticker; drawn: boolean } | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -39,13 +53,55 @@ export default function HomePage() {
   }, [signedIn]);
 
   const now = new Date();
-  const date = now.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-  const day = now.toLocaleDateString("en-US", { weekday: "long" });
+  const month = now.toLocaleDateString("en-US", { month: "short" });
+  const weekday = now.toLocaleDateString("en-US", { weekday: "long" });
 
-  const latest = state?.latest ?? null;
+  const framed = state?.latestMade ?? null;
   const showCoffee =
     Boolean(SUPPORT_URL && state) &&
     (SUPPORT_COUNTRIES.length === 0 || SUPPORT_COUNTRIES.includes(state?.country ?? ""));
+
+  // Middle shelf: one donut per draw left today. An opened donut leaves its sticker in the
+  // same spot. slotOf[i] is the shelf position of the i-th sticker drawn today.
+  const drawn = state?.drawnToday ?? [];
+  const donutsLeft = !state ? 0 : state.unlimited ? STAFF_DONUTS : state.drawsLeft;
+  const [slotOf, setSlotOf] = useState<number[]>([]);
+  const [opening, setOpening] = useState<number | null>(null);
+  // which of the donut pictures sits at each shelf position
+  // The six pictures in a random order, repeated, so neighbors never match.
+  const [looks] = useState(() =>
+    Array.from({ length: DONUTS }, (_, i) => i + 1).sort(() => Math.random() - 0.5),
+  );
+  // After a reload (or anything else that changes today's draws) stickers simply come first.
+  const positions = slotOf.length === drawn.length ? slotOf : drawn.map((_, i) => i);
+  const slots = Array.from({ length: drawn.length + donutsLeft }, (_, slot) => {
+    const i = positions.indexOf(slot);
+    return i >= 0 ? drawn[i] : null;
+  });
+
+  async function openDonut(slot: number) {
+    if (opening !== null) return;
+    setOpening(slot);
+    try {
+      const [{ sticker }] = await Promise.all([
+        api<{ sticker: Sticker | null }>("/api/draw", { method: "POST" }),
+        new Promise((resolve) => setTimeout(resolve, 900)),
+      ]);
+      if (!sticker) {
+        showToast("No stickers from other owners yet. Your draw was not used.");
+        return;
+      }
+      await preload(sticker.thumbUrl || sticker.imageUrl);
+      const before = positions;
+      await refresh();
+      setSlotOf([...before, slot]);
+      setShown({ sticker, drawn: true });
+    } catch (e) {
+      showToast(e instanceof Error ? e.message : "Something went wrong");
+    } finally {
+      setOpening(null);
+    }
+  }
 
   // With no chances left the button still reacts to the tap, but shows a short notice instead of opening.
   function enter(path: string, left: number | undefined, notice: string) {
@@ -99,12 +155,6 @@ export default function HomePage() {
   return (
     <main className="home">
       <header className="home-head">
-        <h1 className="home-date" suppressHydrationWarning>
-          {date}
-        </h1>
-        <p className="home-day" suppressHydrationWarning>
-          {day}
-        </p>
         {state?.user && (
           <div className="profile">
             <button className="avatar" aria-label="Profile" onClick={() => setMenuOpen(!menuOpen)}>
@@ -141,47 +191,98 @@ export default function HomePage() {
 
       {state && <RemovalNotice removed={state.removed} />}
 
-      <div className="grid">
-        <button
-          className="tile"
-          aria-label="Draw a sticker"
-          onClick={() =>
-            enter("/draw", state?.drawsLeft, "No draws left today. Make a sticker to earn one!")
-          }
-        >
-          {hints && <span className="hint">Draw a pet</span>}
-          <DonutArt />
-        </button>
+      <div className="shelves">
+        <section className="shelf">
+          <div className="shelf-items">
+            <div className="daycal">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className="art" src="/art/calendar.png" alt="" draggable={false} />
+              <div className="daycal-page" suppressHydrationWarning>
+                <span className="daycal-month" suppressHydrationWarning>
+                  {month}
+                </span>
+                <span className="daycal-day" suppressHydrationWarning>
+                  {now.getDate()}
+                </span>
+                <span className="daycal-week" suppressHydrationWarning>
+                  {weekday}
+                </span>
+              </div>
+            </div>
 
-        <button
-          className="tile"
-          aria-label="Make a sticker"
-          onClick={() =>
-            enter(
-              "/create",
-              state?.createsLeft,
-              "No sticker chances left today. Come back tomorrow!",
-            )
-          }
-        >
-          {hints && <span className="hint">Make a sticker</span>}
-          <CameraArt />
-        </button>
+            <button
+              className="frame"
+              aria-label="Your latest sticker"
+              onClick={() =>
+                framed
+                  ? setShown({ sticker: framed, drawn: false })
+                  : state && showToast("The newest sticker you make goes in this frame.")
+              }
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className="art" src="/art/frame.png" alt="" draggable={false} />
+              <div className="frame-inside">{framed && <StickerCard sticker={framed} />}</div>
+            </button>
+          </div>
+          <div className="shelf-board" />
+        </section>
 
-        <button className="tile" aria-label="Sticker album" onClick={() => router.push("/album")}>
-          {hints && <span className="hint">Your album</span>}
-          <AlbumArt />
-        </button>
+        <section className="shelf">
+          <div className="shelf-items shelf-row">
+            {slots.map((sticker, slot) =>
+              sticker ? (
+                <button
+                  key={slot}
+                  className="slot slot-sticker"
+                  aria-label={`Sticker ${sticker.name}`}
+                  onClick={() => setShown({ sticker, drawn: true })}
+                >
+                  <StickerCard sticker={sticker} />
+                </button>
+              ) : (
+                <button
+                  key={slot}
+                  className="slot"
+                  aria-label="Open a donut"
+                  data-spin={opening === slot}
+                  onClick={() => openDonut(slot)}
+                >
+                  {hints && slot === drawn.length && <span className="hint">Open one</span>}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img className="art" src={`/art/donut-${looks[slot % looks.length]}.png`} alt="" draggable={false} />
+                </button>
+              ),
+            )}
+            {state && donutsLeft === 0 && (
+              <p className="shelf-note">Make a sticker to get another donut</p>
+            )}
+          </div>
+          <div className="shelf-board" />
+        </section>
 
-        <button
-          className="tile tile-latest"
-          aria-label="Latest sticker"
-          disabled={!latest}
-          onClick={() => setShowLatest(true)}
-        >
-          {hints && <span className="hint">Latest sticker</span>}
-          {latest ? <StickerCard sticker={latest} /> : <EmptyStickerArt />}
-        </button>
+        <section className="shelf">
+          <div className="shelf-items">
+            <button className="shelf-item" aria-label="Sticker album" onClick={() => router.push("/album")}>
+              {hints && <span className="hint">Your album</span>}
+              <AlbumArt />
+            </button>
+            <button
+              className="shelf-item"
+              aria-label="Make a sticker"
+              onClick={() =>
+                enter(
+                  "/create",
+                  state?.createsLeft,
+                  "No sticker chances left today. Come back tomorrow!",
+                )
+              }
+            >
+              {hints && <span className="hint">Make a sticker</span>}
+              <CameraArt />
+            </button>
+          </div>
+          <div className="shelf-board" />
+        </section>
       </div>
 
       {showCoffee && <Coffee url={SUPPORT_URL} />}
@@ -216,8 +317,8 @@ export default function HomePage() {
         </div>
       )}
 
-      {showLatest && latest && (
-        <StickerDetail sticker={latest} onClose={() => setShowLatest(false)} />
+      {shown && (
+        <StickerDetail sticker={shown.sticker} report={shown.drawn} onClose={() => setShown(null)} />
       )}
     </main>
   );

@@ -11,7 +11,7 @@ const random = (min: number, max: number) => min + Math.random() * (max - min);
 function pickSpot() {
   const app = document.querySelector(".app")?.getBoundingClientRect();
   const head = document.querySelector(".home-head")?.getBoundingClientRect();
-  const tiles = [...document.querySelectorAll(".tile")].map((t) => t.getBoundingClientRect());
+  const tiles = [...document.querySelectorAll(".shelf")].map((t) => t.getBoundingClientRect());
   if (!app || !head || tiles.length === 0) return null;
 
   const tilesTop = Math.min(...tiles.map((t) => t.top));

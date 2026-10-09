@@ -2,7 +2,7 @@
 
 import { flagUrl, formatSerial, STICKER_BGS, type Sticker } from "./types";
 
-const INK = "#3f729b";
+const INK = "#a35f6d";
 const STICKER_RATIO = 1.18;
 
 function loadImage(url: string) {
@@ -39,7 +39,7 @@ function drawSticker(
   // The border is inset by half its width so it is not clipped at the canvas edge.
   const border = 0.4 * u;
   ctx.fillStyle = "#fff";
-  ctx.strokeStyle = "#dbe9f4";
+  ctx.strokeStyle = "#f1dede";
   ctx.lineWidth = border;
   ctx.beginPath();
   ctx.roundRect(border / 2, border / 2, width - border, height - border, 6 * u);
@@ -67,7 +67,7 @@ function drawSticker(
   const serial = formatSerial(sticker.serialNo);
   ctx.font = `800 ${5.2 * u}px ${family}`;
   const pillWidth = ctx.measureText(serial).width + 6 * u;
-  ctx.fillStyle = "#bfe3ff";
+  ctx.fillStyle = "#f7cac9";
   ctx.beginPath();
   ctx.roundRect(6 * u, 6 * u, pillWidth, 9 * u, 4.5 * u);
   ctx.fill();
@@ -84,7 +84,7 @@ function drawSticker(
     ctx.clip();
     ctx.drawImage(flag, flagBox.x, flagBox.y, flagBox.w, flagBox.h);
     ctx.restore();
-    ctx.strokeStyle = "#dbe9f4";
+    ctx.strokeStyle = "#f1dede";
     ctx.lineWidth = 0.3 * u;
     ctx.beginPath();
     ctx.roundRect(flagBox.x, flagBox.y, flagBox.w, flagBox.h, u);
@@ -99,7 +99,7 @@ function drawSticker(
     size -= 0.4 * u;
     ctx.font = `800 ${size}px ${family}`;
   }
-  ctx.fillStyle = "#24384a";
+  ctx.fillStyle = "#4b2f37";
   ctx.textAlign = "left";
   ctx.fillText(sticker.name, nameX, midY, nameMax);
 

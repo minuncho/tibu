@@ -1,19 +1,20 @@
 :root {
-  --sky: #bfe3ff;
-  --sky-deep: #86c3f2;
-  --sky-pale: #e3f3ff;
-  --surface: #f2f9ff;
-  --line: #d9eaf7;
-  /* primary buttons: deeper than the theme sky so they read as active, not disabled */
-  --action: #4a9be0;
-  --ink: #3f729b;
-  --ink-soft: #7ea6c6;
-  --text: #24384a;
+  /* Theme: rose quartz. The --sky names date from the first, sky-blue theme. */
+  --sky: #f7cac9;
+  --sky-deep: #ee9ea6;
+  --sky-pale: #fdeceb;
+  --surface: #fff5f4;
+  --line: #f6dcdb;
+  /* primary buttons: deeper than the theme color so they read as active, not disabled */
+  --action: #e5768a;
+  --ink: #a35f6d;
+  --ink-soft: #cf9ca4;
+  --text: #4b2f37;
   --white: #fff;
   --on-color: #fff;
-  --page: #f3f9fd;
+  --page: #fdf3f2;
   --app: #fff;
-  --danger: #e0527a;
+  --danger: #d64545;
   --radius: 24px;
 }
 
@@ -95,21 +96,7 @@ button {
 
 .home-head {
   position: relative;
-  text-align: center;
-  padding: 20px 0 22px;
-}
-
-.home-date {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.home-day {
-  margin: 2px 0 0;
-  font-size: 14px;
-  color: var(--ink-soft);
+  min-height: 48px;
 }
 
 .profile {
@@ -155,7 +142,7 @@ button {
   border: 1px solid var(--line);
   border-radius: 20px;
   background: var(--white);
-  box-shadow: 0 6px 18px rgba(47, 106, 153, 0.15);
+  box-shadow: 0 6px 18px rgba(153, 72, 90, 0.15);
   text-align: left;
   animation: pop 0.15s ease-out;
   transform-origin: top left;
@@ -257,28 +244,153 @@ button {
   opacity: 0.5;
 }
 
-.grid {
+/* Three shelves: calendar + framed sticker, today's donuts, album + camera. */
+.shelves {
   margin: auto 0;
-  padding: 0 36px 12vh;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
+  padding: 0 4px 6vh;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
 }
 
-/* Just the object on the page. */
-.tile {
+.shelf-items {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-end;
+  padding: 0 10px;
+}
+
+.shelf-board {
+  height: 12px;
+  border-radius: 6px;
+  background: var(--sky);
+}
+
+.shelves .art {
+  display: block;
+  width: 100%;
+}
+
+.shelf-item,
+.frame,
+.slot {
   position: relative;
-  aspect-ratio: 1;
   padding: 0;
   border: 0;
   background: none;
-  display: grid;
-  place-items: center;
   transition: transform 0.12s;
 }
 
-.tile:active {
-  transform: scale(0.92);
+.shelf-item:active,
+.frame:active,
+.slot:active {
+  transform: scale(0.94);
+}
+
+.shelf-item {
+  width: 36%;
+}
+
+/* Tear-off day calendar: today's date is written on the blank page of the picture. */
+.daycal {
+  position: relative;
+  width: 34%;
+}
+
+.daycal-page {
+  container-type: inline-size;
+  position: absolute;
+  left: 3%;
+  top: 31%;
+  width: 93%;
+  height: 67%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 4%;
+  line-height: 1;
+}
+
+.daycal-month {
+  font-size: 15cqw;
+  font-weight: 700;
+  color: var(--sky-deep);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.daycal-day {
+  margin: 2cqw 0 3cqw;
+  font-size: 40cqw;
+  font-weight: 800;
+  color: #4b2f37;
+}
+
+.daycal-week {
+  font-size: 12cqw;
+  color: #cf9ca4;
+}
+
+/* Picture frame holding the newest sticker the user made. */
+.frame {
+  width: 33%;
+}
+
+.frame-inside {
+  position: absolute;
+  left: 16.1%;
+  top: 13.5%;
+  width: 67.1%;
+  height: 73.5%;
+  display: grid;
+  place-items: center;
+}
+
+.frame-inside .sticker {
+  width: 94%;
+}
+
+.frame-inside .sticker-body {
+  border: 0;
+  box-shadow: none;
+}
+
+/* Today's donuts and the stickers that came out of them; scrolls sideways when there are many. */
+.shelf-row {
+  justify-content: safe center;
+  gap: 8px;
+  min-height: 88px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.shelf-row::-webkit-scrollbar {
+  display: none;
+}
+
+.slot {
+  flex: 0 0 21%;
+}
+
+.slot-sticker {
+  padding: 0 1% 2px;
+  animation: pop 0.45s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+
+.slot[data-spin="true"] {
+  animation: shake 0.45s ease-in-out infinite;
+}
+
+.shelf-note {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.detail-report {
+  margin-top: 14px;
+  text-align: center;
 }
 
 /* First-visit label over a home item */
@@ -309,16 +421,6 @@ button {
   margin-left: -4.5px;
   background: var(--text);
   transform: rotate(45deg);
-}
-
-.tile .art {
-  width: 80%;
-  height: 80%;
-  object-fit: contain;
-}
-
-.tile-latest .sticker {
-  width: 62%;
 }
 
 /* Coffee cup that drops in at a random free spot (see components/Coffee.tsx) */
@@ -386,7 +488,7 @@ button {
   border: 0.4cqw solid var(--line);
   border-radius: 6cqw;
   background: var(--white);
-  box-shadow: 0 1cqw 3cqw rgba(47, 106, 153, 0.1);
+  box-shadow: 0 1cqw 3cqw rgba(153, 72, 90, 0.1);
   overflow: hidden;
 }
 
@@ -450,7 +552,7 @@ button {
   width: 10cqw;
   height: 7.5cqw;
   border-radius: 1cqw;
-  box-shadow: 0 0 0 0.3cqw #dbe9f4;
+  box-shadow: 0 0 0 0.3cqw #f1dede;
   object-fit: cover;
 }
 
@@ -525,7 +627,7 @@ a.back {
 
 .card {
   padding: 20px;
-  border: 1px solid #e3eef6;
+  border: 1px solid #f6e4e3;
   border-radius: var(--radius);
   background: var(--white);
 }
@@ -566,7 +668,7 @@ a.back {
 }
 
 .btn:disabled {
-  background: #d5e0ea;
+  background: #ead9da;
 }
 
 .btn-ghost,
@@ -582,7 +684,7 @@ a.back {
 }
 
 .btn-danger {
-  background: #f0718f;
+  background: #c93d3d;
 }
 
 .actions {
@@ -640,7 +742,7 @@ a.back {
   inset: 0;
   z-index: 10;
   padding: 24px;
-  background: rgba(36, 56, 74, 0.5);
+  background: rgba(75, 47, 55, 0.5);
   display: grid;
   place-items: center;
 }
@@ -708,6 +810,7 @@ a.back {
 .login .art {
   width: 180px;
   height: 180px;
+  object-fit: contain;
 }
 
 /* ---------- Create ---------- */
@@ -936,7 +1039,7 @@ a.back {
 }
 
 .tag {
-  background: #fff1f5;
+  background: #fdeaea;
   color: var(--danger);
 }
 
@@ -1175,9 +1278,9 @@ a.back {
   --surface: #202027;
   --line: #3c3c47;
   --sky: #3c3c47;
-  --sky-deep: #4593fc;
+  --sky-deep: #f29ca8;
   --sky-pale: #202027;
-  --action: #3485fa;
+  --action: #e5768a;
   --ink: #c3c3c6;
   --ink-soft: #7e7e87;
   --text: #e4e4e5;
@@ -1187,14 +1290,14 @@ a.back {
 /* A sticker is a white card in either theme, like the saved image. */
 :root[data-theme="dark"] .sticker {
   --white: #fff;
-  --line: #d9eaf7;
-  --text: #24384a;
-  --ink: #3f729b;
-  --ink-soft: #7ea6c6;
-  --sky: #bfe3ff;
-  --sky-pale: #e3f3ff;
-  --sky-deep: #86c3f2;
-  --surface: #f2f9ff;
+  --line: #f6dcdb;
+  --text: #4b2f37;
+  --ink: #a35f6d;
+  --ink-soft: #cf9ca4;
+  --sky: #f7cac9;
+  --sky-pale: #fdeceb;
+  --sky-deep: #ee9ea6;
+  --surface: #fff5f4;
 }
 
 :root[data-theme="dark"] .btn:disabled {

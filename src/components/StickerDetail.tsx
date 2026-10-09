@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { downloadSticker } from "@/lib/render";
 import type { Sticker } from "@/lib/types";
+import { ReportButton } from "./Report";
 import { SpeechBubble, StickerCard } from "./Sticker";
 
 export function StickerView({ sticker }: { sticker: Sticker }) {
@@ -38,13 +39,15 @@ export function DownloadButton({ sticker }: { sticker: Sticker }) {
   );
 }
 
-export function StickerDetail({ sticker, onClose }: { sticker: Sticker; onClose: () => void }) {
+// report: also offer "Report this sticker" (only stickers the viewer drew can be reported).
+export function StickerDetail(props: { sticker: Sticker; report?: boolean; onClose: () => void }) {
+  const { sticker, report, onClose } = props;
   return (
     // Anything that is not the sticker, its bubble or a button counts as "outside".
     <div
       className="modal"
       onClick={(e) => {
-        if (!(e.target as HTMLElement).closest(".sticker-body, .bubble, .actions")) onClose();
+        if (!(e.target as HTMLElement).closest(".sticker-body, .bubble, .actions, .detail-report")) onClose();
       }}
     >
       <div className="modal-content">
@@ -55,6 +58,11 @@ export function StickerDetail({ sticker, onClose }: { sticker: Sticker; onClose:
             Close
           </button>
         </div>
+        {report && (
+          <div className="detail-report">
+            <ReportButton key={sticker.id} sticker={sticker} />
+          </div>
+        )}
       </div>
     </div>
   );

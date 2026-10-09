@@ -229,6 +229,31 @@ export const supabaseStore: Store = {
       (r) => ({ drawId: r.id, drawnAt: r.created_at, sticker: toRow(r.stickers) }),
     );
   },
+  async listDrawnOn(userId, date) {
+    const rows = check(
+      await db()
+        .from("draws")
+        .select("created_at, stickers!inner(*)")
+        .eq("user_id", userId)
+        .eq("local_date", date)
+        .eq("stickers.hidden", false)
+        .order("created_at"),
+    );
+    return (rows as unknown as { stickers: DbSticker }[]).map((r) => toRow(r.stickers));
+  },
+  async latestMade(userId) {
+    const row = check(
+      await db()
+        .from("stickers")
+        .select("*")
+        .eq("owner_id", userId)
+        .eq("hidden", false)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+    ) as DbSticker | null;
+    return row ? toRow(row) : null;
+  },
   async latestInAlbum(userId) {
     const [drawnRes, madeRes] = await Promise.all([
       db()

@@ -76,6 +76,10 @@ export type AppState = {
   removed: { id: string; serialNo: number; name: string }[];
   // newest sticker in the album, whether made or drawn
   latest: Sticker | null;
+  // newest sticker the user made; shown framed on the home screen
+  latestMade: Sticker | null;
+  // stickers drawn today, oldest first; they sit on the home shelf where their donuts were
+  drawnToday: Sticker[];
 };
 
 export type StaffReport = {

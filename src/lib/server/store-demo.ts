@@ -167,6 +167,17 @@ export const demoStore: Store = {
     }
     return out;
   },
+  async listDrawnOn(userId, date) {
+    const db = load();
+    const stickers = visible(db);
+    return db.draws
+      .filter((d) => d.userId === userId && d.date === date)
+      .map((d) => stickers.find((s) => s.id === d.stickerId))
+      .filter((s) => s !== undefined);
+  },
+  async latestMade(userId) {
+    return (await this.listMade(userId)).at(-1) ?? null;
+  },
   async latestInAlbum(userId) {
     const drawn = (await this.listDrawn(userId)).at(-1);
     const made = (await this.listMade(userId)).at(-1);
