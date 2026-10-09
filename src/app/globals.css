@@ -252,7 +252,7 @@ button {
 
 .shelf-items {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
 }
 
 .shelves .art {
@@ -293,8 +293,9 @@ button {
   flex: 0 0 31.5%;
 }
 
+/* Narrower than the slot so the card stands a little lower than a bread. */
 .slot-sticker {
-  padding: 0 1% 2px;
+  padding: 0 2.6% 1%;
   animation: pop 0.45s cubic-bezier(0.2, 1.4, 0.4, 1);
 }
 
