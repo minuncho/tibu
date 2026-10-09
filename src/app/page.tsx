@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AlbumArt, CameraArt } from "@/components/Art";
 import { Coffee } from "@/components/Coffee";
 import { RemovalNotice } from "@/components/RemovalNotice";
 import { StickerCard } from "@/components/Sticker";
@@ -52,16 +51,12 @@ export default function HomePage() {
     return () => localStorage.setItem(HINTS_KEY, "1");
   }, [signedIn]);
 
-  const now = new Date();
-  const month = now.toLocaleDateString("en-US", { month: "short" });
-  const weekday = now.toLocaleDateString("en-US", { weekday: "long" });
 
-  const framed = state?.latestMade ?? null;
   const showCoffee =
     Boolean(SUPPORT_URL && state) &&
     (SUPPORT_COUNTRIES.length === 0 || SUPPORT_COUNTRIES.includes(state?.country ?? ""));
 
-  // Middle shelf: one bagged bread per draw left today. An opened one leaves its sticker in the
+  // One bagged bread per draw left today. An opened one leaves its sticker in the
   // same spot. slotOf[i] is the shelf position of the i-th sticker drawn today.
   const drawn = state?.drawnToday ?? [];
   const breadsLeft = !state ? 0 : state.unlimited ? STAFF_BREADS : state.drawsLeft;
@@ -193,26 +188,6 @@ export default function HomePage() {
 
       <div className="shelves">
         <section className="shelf">
-          <div className="shelf-items">
-            <div className="daycal">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img className="art" src="/art/calendar.png" alt="" draggable={false} />
-              <div className="daycal-page" suppressHydrationWarning>
-                <span className="daycal-month" suppressHydrationWarning>
-                  {month}
-                </span>
-                <span className="daycal-day" suppressHydrationWarning>
-                  {now.getDate()}
-                </span>
-                <span className="daycal-week" suppressHydrationWarning>
-                  {weekday}
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="shelf">
           <div className="shelf-items shelf-row">
             {slots.map((sticker, slot) =>
               sticker ? (
@@ -243,43 +218,24 @@ export default function HomePage() {
             )}
           </div>
         </section>
+      </div>
 
-        <section className="shelf">
-          <div className="shelf-items">
-            <button
-              className="frame"
-              aria-label="Your latest sticker"
-              onClick={() =>
-                framed
-                  ? setShown({ sticker: framed, drawn: false })
-                  : state && showToast("The newest sticker you make goes in this frame.")
-              }
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img className="art" src="/art/frame.png" alt="" draggable={false} />
-              <div className="frame-inside">{framed && <StickerCard sticker={framed} />}</div>
-            </button>
-
-            <button className="shelf-item" aria-label="Sticker album" onClick={() => router.push("/album")}>
-              {hints && <span className="hint">Your album</span>}
-              <AlbumArt />
-            </button>
-            <button
-              className="shelf-item"
-              aria-label="Make a sticker"
-              onClick={() =>
-                enter(
-                  "/create",
-                  state?.createsLeft,
-                  "No sticker chances left today. Come back tomorrow!",
-                )
-              }
-            >
-              {hints && <span className="hint">Make a sticker</span>}
-              <CameraArt />
-            </button>
-          </div>
-        </section>
+      <div className="home-actions">
+        <button className="btn btn-ghost" onClick={() => router.push("/album")}>
+          Album
+        </button>
+        <button
+          className="btn"
+          onClick={() =>
+            enter(
+              "/create",
+              state?.createsLeft,
+              "No sticker chances left today. Come back tomorrow!",
+            )
+          }
+        >
+          Make
+        </button>
       </div>
 
       {showCoffee && <Coffee url={SUPPORT_URL} />}

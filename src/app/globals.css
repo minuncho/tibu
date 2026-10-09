@@ -244,43 +244,23 @@ button {
   opacity: 0.5;
 }
 
-/* Three rows: the day calendar, today's breads, then frame + album + camera. */
+/* Home: today's bagged breads in the middle, two text buttons at the bottom. */
 .shelves {
-  flex: 1;
-  padding: 0 4px 6vh;
-  display: flex;
-  flex-direction: column;
-  gap: 34px;
-}
-
-/* The calendar sits at the very top, level with the profile button; the rest is centered below. */
-.shelf:first-child {
-  margin-top: -44px;
-}
-
-.shelf:nth-child(2) {
-  margin-top: auto;
-}
-
-.shelf:last-child {
-  margin-bottom: auto;
+  margin: auto 0;
+  padding: 0 4px;
 }
 
 .shelf-items {
   display: flex;
-  justify-content: space-evenly;
   align-items: flex-end;
   padding: 0 10px;
 }
 
-/* The objects keep natural colors (wood frame, red calendar, gray camera); only the UI is rose. */
 .shelves .art {
   display: block;
   width: 100%;
 }
 
-.shelf-item,
-.frame,
 .slot {
   position: relative;
   padding: 0;
@@ -289,79 +269,18 @@ button {
   transition: transform 0.12s;
 }
 
-.shelf-item:active,
-.frame:active,
 .slot:active {
   transform: scale(0.94);
 }
 
-.shelf-item {
-  width: 26%;
-}
-
-/* Tear-off day calendar: today's date is written on the blank page of the picture. */
-.daycal {
-  position: relative;
-  width: 27%;
-}
-
-.daycal-page {
-  container-type: inline-size;
-  position: absolute;
-  left: 2%;
-  top: 32.6%;
-  width: 96%;
-  height: 64.8%;
+.home-actions {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding-bottom: 4%;
-  line-height: 1;
+  gap: 10px;
+  padding: 0 4px 8px;
 }
 
-.daycal-month {
-  font-size: 15cqw;
-  font-weight: 700;
-  color: #e0453f;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.daycal-day {
-  margin: 2cqw 0 3cqw;
-  font-size: 40cqw;
-  font-weight: 800;
-  color: #3a3335;
-}
-
-.daycal-week {
-  font-size: 12cqw;
-  color: #9a9093;
-}
-
-/* Picture frame holding the newest sticker the user made. */
-.frame {
-  width: 22%;
-}
-
-.frame-inside {
-  position: absolute;
-  left: 16.5%;
-  top: 12.3%;
-  width: 67.5%;
-  height: 75.3%;
-  display: grid;
-  place-items: center;
-}
-
-.frame-inside .sticker {
-  width: 94%;
-}
-
-.frame-inside .sticker-body {
-  border: 0;
-  box-shadow: none;
+.home-actions .btn {
+  flex: 1;
 }
 
 /* Today's breads and the stickers that came out of them; scrolls sideways when there are many. */
@@ -378,7 +297,7 @@ button {
 }
 
 .slot {
-  flex: 0 0 21%;
+  flex: 0 0 27%;
 }
 
 .slot-sticker {
