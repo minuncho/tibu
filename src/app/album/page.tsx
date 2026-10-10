@@ -10,26 +10,26 @@ import { api } from "@/lib/api";
 import type { AlbumEntry, Sticker } from "@/lib/types";
 
 type Filter = "made" | "drawn";
-type Sort = "number" | "date";
 
 export default function AlbumPage() {
   const { state } = useAppState();
   const [filter, setFilter] = useState<Filter>("drawn");
-  const [sort, setSort] = useState<Sort>("number");
   const [entries, setEntries] = useState<AlbumEntry[] | null>(null);
   const [open, setOpen] = useState<Sticker | null>(null);
 
+  // Always in the order they were collected. Sorting by number was dropped: gaps left by
+  // removed stickers looked like numbers one could still draw.
   useEffect(() => {
     if (!state) return;
     let stale = false;
     setEntries(null);
-    api<{ entries: AlbumEntry[] }>(`/api/album?filter=${filter}&sort=${sort}`)
+    api<{ entries: AlbumEntry[] }>(`/api/album?filter=${filter}&sort=date`)
       .then((data) => !stale && setEntries(data.entries))
       .catch(() => !stale && setEntries([]));
     return () => {
       stale = true;
     };
-  }, [state, filter, sort]);
+  }, [state, filter]);
 
   return (
     <main>
@@ -41,14 +41,6 @@ export default function AlbumPage() {
           options={[
             ["drawn", "Drawn"],
             ["made", "Made"],
-          ]}
-        />
-        <Segment
-          value={sort}
-          onChange={setSort}
-          options={[
-            ["number", "No."],
-            ["date", "Date"],
           ]}
         />
       </div>

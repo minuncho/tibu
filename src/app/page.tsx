@@ -231,7 +231,7 @@ export default function HomePage() {
                   data-spin={opening === spot}
                   onClick={() => openBread(spot)}
                 >
-                  {hints && spot === firstBread && <span className="hint">Open one</span>}
+                  {hints && spot === firstBread && <span className="hint">Open me</span>}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img className="art" src={`/art/bread-${look(spot)}.png`} alt="" draggable={false} />
                 </button>

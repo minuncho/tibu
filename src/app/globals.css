@@ -816,6 +816,7 @@ a.back {
 .picker .art {
   width: 50%;
   height: 50%;
+  object-fit: contain;
 }
 
 .waiting {
@@ -864,12 +865,15 @@ a.back {
 /* Row of round color choices for the sticker background */
 .swatches {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
   width: 100%;
 }
 
+/* flex: none keeps them round when the row is tight; they wrap instead of squashing. */
 .swatch {
+  flex: none;
   width: 34px;
   height: 34px;
   padding: 0;
