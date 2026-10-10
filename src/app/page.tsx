@@ -233,7 +233,7 @@ export default function HomePage() {
                 >
                   {hints && spot === firstBread && <span className="hint">Open me</span>}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img className="art" src={`/art/bread-${look(spot)}.png`} alt="" draggable={false} />
+                  <img className="art" src={`/art/bread-${look(spot)}.webp`} alt="" draggable={false} />
                 </button>
               ) : (
                 <button

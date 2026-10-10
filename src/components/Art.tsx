@@ -12,9 +12,11 @@ const DEFAULT_BREAD = 10;
 
 export function BreadArt() {
   // eslint-disable-next-line @next/next/no-img-element
-  return <img className="art" src={`/art/bread-${DEFAULT_BREAD}.png`} alt="" draggable={false} />;
+  return <img className="art" src={`/art/bread-${DEFAULT_BREAD}.webp`} alt="" draggable={false} />;
 }
-export const CameraArt = () => <Art name="camera" />;
+// The breads and the camera are WebP (about 50 KB instead of 350 KB as PNG).
+// eslint-disable-next-line @next/next/no-img-element
+export const CameraArt = () => <img className="art" src="/art/camera.webp" alt="" draggable={false} />;
 export const AlbumArt = () => <Art name="album" />;
 // Empty slot shown while the album is empty.
 export const EmptyStickerArt = () => <Art name="empty" />;
