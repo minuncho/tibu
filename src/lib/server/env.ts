@@ -17,6 +17,11 @@ export const STAFF_EMAILS = ["minunsyc@gmail.com"].concat(
     .map((email) => email.trim().toLowerCase())
     .filter(Boolean),
 );
+// Most that image conversion may cost in a calendar month, and what one conversion (three
+// pictures) is assumed to cost. Together they decide how many stickers can be made each day;
+// see budget.ts. Change them in the hosting dashboard, no code change needed.
+export const MONTHLY_BUDGET_USD = Number(process.env.MONTHLY_BUDGET_USD) || 50;
+export const CONVERSION_COST_USD = Number(process.env.CONVERSION_COST_USD) || 0.08;
 export const OPENAI_IMAGE_MODEL = clean(process.env.OPENAI_IMAGE_MODEL) || "gpt-image-2.5-sunburst";
 
 // Toss in-app version (tibu-toss). The certificate and key are PEM text from the Apps in Toss

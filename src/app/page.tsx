@@ -260,11 +260,13 @@ export default function HomePage() {
         <button
           className="btn"
           onClick={() =>
-            enter(
-              "/create",
-              state?.createsLeft,
-              "No sticker chances left today. Come back tomorrow!",
-            )
+            state && !state.makingOpen
+              ? showToast("Today's stickers are all made. Making opens again tomorrow.")
+              : enter(
+                  "/create",
+                  state?.createsLeft,
+                  "No sticker chances left today. Come back tomorrow!",
+                )
           }
         >
           Make

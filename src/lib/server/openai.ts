@@ -1,5 +1,6 @@
 import type { StickerStyle } from "../types";
 import { OPENAI_API_KEY, OPENAI_IMAGE_MODEL } from "./env";
+import { CLOSED_CODE, CLOSED_MESSAGE } from "./closed";
 import { PublicError } from "./http";
 
 // The two drawn styles are written as a short list of rules, one per line, worked out with
@@ -76,7 +77,12 @@ async function requestImage(photo: Blob, style: StickerStyle, extra: Record<stri
   const data = await res.json().catch(() => null);
   const b64 = data?.data?.[0]?.b64_json;
   if (!res.ok || !b64) {
-    // OpenAI's own message (policy refusal, unverified organization, no credit) is safe to show.
+    // Out of credit or over the account's spending limit: the same as our own daily closing.
+    if (/insufficient_quota|billing_hard_limit|billing_not_active/.test(`${data?.error?.code} ${data?.error?.type}`)) {
+      console.error("OpenAI budget exhausted:", data?.error?.code);
+      throw new PublicError(CLOSED_MESSAGE, CLOSED_CODE);
+    }
+    // OpenAI's own message (policy refusal, unverified organization) is safe to show.
     throw new PublicError(data?.error?.message || `Image conversion failed (${res.status})`);
   }
   return Buffer.from(b64, "base64");

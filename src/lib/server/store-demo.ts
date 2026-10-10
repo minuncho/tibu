@@ -75,6 +75,9 @@ export const demoStore: Store = {
   async countGenerations(userId, date) {
     return load().generations.filter((g) => g.userId === userId && g.date === date).length;
   },
+  async countGenerationsFrom(date) {
+    return load().generations.filter((g) => g.date >= date).length;
+  },
   async createGeneration(g) {
     const db = load();
     db.generations.push({ ...g, used: false });
@@ -194,6 +197,9 @@ export const demoStore: Store = {
     const db = load();
     db.credits.push({ userId, amount, reason });
     save(db);
+  },
+  async countCredits(userId, reason) {
+    return load().credits.filter((c) => c.userId === userId && c.reason === reason).length;
   },
 
   async createReport(r) {

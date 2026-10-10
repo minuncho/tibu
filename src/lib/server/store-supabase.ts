@@ -83,6 +83,9 @@ export const supabaseStore: Store = {
       await db().from("generations").select("id", HEAD).eq("user_id", userId).eq("local_date", date),
     );
   },
+  async countGenerationsFrom(date) {
+    return count(await db().from("generations").select("id", HEAD).gte("local_date", date));
+  },
   async createGeneration(g) {
     check(
       await db()
@@ -288,6 +291,11 @@ export const supabaseStore: Store = {
   },
   async addCredit(userId, amount, reason) {
     check(await db().from("credits").insert({ user_id: userId, amount, reason }));
+  },
+  async countCredits(userId, reason) {
+    return count(
+      await db().from("credits").select("id", HEAD).eq("user_id", userId).eq("reason", reason),
+    );
   },
 
   async createReport(r) {

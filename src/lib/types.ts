@@ -11,6 +11,8 @@ export const NAME_MAX = 20;
 export const BUBBLE_MAX = 50;
 export const CREATES_PER_DAY = 3;
 export const BASE_DRAWS_PER_DAY = 3;
+// Extra draws a day that can be earned by watching a rewarded ad (Toss app only).
+export const AD_DRAWS_PER_DAY = 5;
 // Upheld report: every reporter of that sticker gets this many draw credits.
 export const REPORT_REWARD = 1;
 
@@ -70,6 +72,10 @@ export type AppState = {
   createsLeft: number;
   // daily draws plus saved credits
   drawsLeft: number;
+  // how many more ad-rewarded draws can be earned today
+  adDrawsLeft: number;
+  // false when today's share of the image budget is used up: nobody can make more today
+  makingOpen: boolean;
   // staff have no daily limits; createsLeft and drawsLeft are then just "plenty"
   unlimited: boolean;
   // the user's own stickers that staff took down; the home screen tells them once

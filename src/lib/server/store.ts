@@ -44,6 +44,8 @@ export type ReportRow = {
 // Stickers hidden by an upheld report never come back from any list or draw.
 export interface Store {
   countGenerations(userId: string, date: string): Promise<number>;
+  // Conversions by everyone on or after that local date (for the monthly budget).
+  countGenerationsFrom(date: string): Promise<number>;
   createGeneration(g: {
     id: string;
     userId: string;
@@ -101,6 +103,8 @@ export interface Store {
   // Draw credits do not expire. Negative amounts spend them.
   creditBalance(userId: string): Promise<number>;
   addCredit(userId: string, amount: number, reason: string): Promise<void>;
+  // How many credit entries the user has with exactly that reason.
+  countCredits(userId: string, reason: string): Promise<number>;
 
   // Returns false when this user already reported this sticker.
   createReport(r: {

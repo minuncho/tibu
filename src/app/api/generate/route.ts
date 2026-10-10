@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { STYLES, type Candidate, type StickerStyle } from "@/lib/types";
 import { hasNoLimits } from "@/lib/server/auth";
+import { CLOSED_CODE, CLOSED_MESSAGE, makingOpen } from "@/lib/server/budget";
 import { localDate } from "@/lib/server/day";
 import { aiEnabled } from "@/lib/server/env";
 import { fail, withUser } from "@/lib/server/http";
@@ -19,6 +20,11 @@ export const POST = withUser(async (req, user) => {
   // Staff have no daily limit, so they can stock the draw pool.
   if (!hasNoLimits(user) && (await createsLeft(user.id, date)) <= 0) {
     return fail(403, "No sticker chances left today");
+  }
+
+  // The month's image budget, shared out by day. Staff are not held back by it.
+  if (aiEnabled && !hasNoLimits(user) && !(await makingOpen())) {
+    return fail(503, CLOSED_MESSAGE, CLOSED_CODE);
   }
 
   const photo = (await req.formData()).get("photo");

@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { CREATES_PER_DAY, type AppState } from "@/lib/types";
 import { getUser, hasNoLimits, isStaff } from "@/lib/server/auth";
+import { makingOpen } from "@/lib/server/budget";
 import { localDate, requestCountry } from "@/lib/server/day";
 import { aiEnabled, isLive } from "@/lib/server/env";
-import { drawsLeft } from "@/lib/server/quota";
+import { adDrawsLeft, drawsLeft } from "@/lib/server/quota";
 import { getStore, toSticker } from "@/lib/server/store";
 
 // What staff see as their remaining chances.
@@ -25,6 +26,8 @@ export async function GET(req: Request) {
     country: requestCountry(req),
     createsLeft: 0,
     drawsLeft: 0,
+    makingOpen: true,
+    adDrawsLeft: 0,
     unlimited: false,
     removed: [],
     latest: null,
@@ -34,14 +37,18 @@ export async function GET(req: Request) {
   if (user) {
     // One parallel wave of queries: every extra sequential step is a full round trip to the database.
     const store = getStore();
-    const [generations, draws, latest, removed, latestMade, drawnToday] = await Promise.all([
+    const [generations, draws, latest, removed, latestMade, drawnToday, open, adDraws] = await Promise.all([
       store.countGenerations(user.id, date),
       drawsLeft(user.id, date),
       store.latestInAlbum(user.id),
       store.listRemovedMade(user.id),
       store.latestMade(user.id),
       store.listDrawnOn(user.id, date),
+      aiEnabled ? makingOpen() : true,
+      adDrawsLeft(user.id, date),
     ]);
+    state.adDrawsLeft = adDraws;
+    state.makingOpen = open || hasNoLimits(user);
     state.removed = removed.map((s) => ({ id: s.id, serialNo: s.serialNo, name: s.name }));
     if (hasNoLimits(user)) {
       state.unlimited = true;
