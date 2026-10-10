@@ -299,6 +299,44 @@ button {
   animation: pop 0.45s cubic-bezier(0.2, 1.4, 0.4, 1);
 }
 
+/* Each spot shows a small spinner until its bread or sticker has arrived; the picture then
+   covers it. The fixed shape keeps the row from jumping while things load. */
+.slot {
+  aspect-ratio: 450 / 470;
+  display: grid;
+  place-items: center;
+}
+
+.slot::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 26px;
+  height: 26px;
+  margin: -13px 0 0 -13px;
+  border: 3px solid var(--sky-pale);
+  border-top-color: var(--sky-deep);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+.slot > .art,
+.slot > .sticker {
+  position: relative;
+  z-index: 1;
+}
+
+/* A spot with nothing in it (no draw left for it, no sticker). */
+.slot-empty::before {
+  display: none;
+}
+
+/* The first-visit label sits clear above the bread, not over it. */
+.slot .hint {
+  top: -34px;
+}
+
 .slot[data-spin="true"] {
   animation: shake 0.45s ease-in-out infinite;
 }

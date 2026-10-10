@@ -19,6 +19,8 @@ const BREADS = 12;
 const STAFF_BREADS = 3;
 // How many breads and stickers the home row holds.
 const SHOWN = 3;
+// Shown until the first answer from the server: three spots with a spinner each.
+const LOADING = Array<"loading">(SHOWN).fill("loading");
 
 function preload(url: string) {
   return new Promise<void>((resolve) => {
@@ -67,6 +69,10 @@ export default function HomePage() {
   const [looks] = useState(() =>
     Array.from({ length: BREADS }, (_, i) => i + 1).sort(() => Math.random() - 0.5),
   );
+  // Fetch the first row's pictures right away, while the server is still answering.
+  useEffect(() => {
+    for (const n of looks.slice(0, SHOWN)) new Image().src = `/art/bread-${n}.webp`;
+  }, [looks]);
   // spotOf[i] is the spot the i-th sticker drawn today came out of. Remembered on this
   // device for the day; stickers drawn elsewhere fill the spots from the left.
   const spotsKey = state ? `spots:${state.date}` : "";
@@ -220,9 +226,11 @@ export default function HomePage() {
       <div className="shelves">
         <section className="shelf">
           <div className="shelf-items shelf-row">
-            {spots.map((item, spot) =>
-              item === null ? (
+            {(state ? spots : LOADING).map((item, spot) =>
+              item === "loading" ? (
                 <span key={spot} className="slot" />
+              ) : item === null ? (
+                <span key={spot} className="slot slot-empty" />
               ) : item === "bread" ? (
                 <button
                   key={spot}
